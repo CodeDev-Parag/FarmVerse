@@ -1,0 +1,170 @@
+/* App-specific styles */
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: auto;
+}
+
+/* Section base styles */
+.section-pinned {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Glass panel enhancements */
+.glass-panel {
+  will-change: transform, opacity;
+}
+
+/* Button ripple effect */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.btn-primary:active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* Product card hover effects */
+.product-card {
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* Testimonial card styles */
+.testimonial-card {
+  will-change: transform, opacity;
+}
+
+/* Scroll indicator animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Loading screen styles */
+.loading-sun {
+  will-change: transform, opacity;
+}
+
+/* Navigation transition */
+nav {
+  will-change: transform, opacity;
+}
+
+/* Cart drawer transitions */
+.cart-drawer {
+  will-change: transform;
+}
+
+/* Modal transitions */
+.modal-content {
+  will-change: transform, opacity;
+}
+
+/* Form input focus states */
+input:focus,
+textarea:focus {
+  box-shadow: 0 0 0 2px rgba(212, 160, 58, 0.2);
+}
+
+/* Category button active state */
+.category-btn.active {
+  background: linear-gradient(135deg, #D4A03A 0%, #B8832A 100%);
+}
+
+/* Stats counter animation */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-value {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* Feature item hover */
+.feature-item {
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(243, 241, 234, 0.1);
+  border-color: rgba(212, 160, 58, 0.3);
+}
+
+/* Tag hover effect */
+.tag {
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  color: rgba(243, 241, 234, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-pinned {
+    min-height: 100vh;
+    height: auto;
+  }
+  
+  .glass-panel {
+    border-radius: 14px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .section-pinned {
+    height: auto;
+    min-height: 100vh;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-panel {
+    background: rgba(11, 58, 46, 0.9);
+    border: 2px solid rgba(243, 241, 234, 0.3);
+  }
+}
