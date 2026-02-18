@@ -59,6 +59,11 @@ module.exports = {
         '2xl': '18px',
         '3xl': '24px',
       },
+      zIndex: {
+        60: '60',
+        70: '70',
+        80: '80',
+      },
       boxShadow: {
         xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
         'glass': '0 8px 32px rgba(0, 0, 0, 0.12)',
