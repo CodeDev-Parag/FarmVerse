@@ -141,7 +141,7 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mx-4 mt-2">
+          <div className="md:hidden mx-4 mt-2 pointer-events-auto">
             <div className="glass-panel p-6 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
