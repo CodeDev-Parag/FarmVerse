@@ -97,6 +97,9 @@ export default function MarketplaceSection() {
 
     setAddedProducts(prev => new Set(prev).add(product.id));
 
+    // Auto-open cart for immediate feedback
+    toggleCart(true);
+
     setTimeout(() => {
       setAddedProducts(prev => {
         const next = new Set(prev);
