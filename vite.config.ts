@@ -17,7 +17,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'gsap-vendor': ['gsap', '@gsap/react'],
+          'gsap-vendor': ['gsap'],
           'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
           'state-vendor': ['zustand']
         }
