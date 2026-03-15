@@ -170,15 +170,13 @@ export default function MovementSection({ onMeetFarmersClick }: MovementSectionP
         }}
       />
 
-      {/* Glass Panel */}
+      {/* Content Panel */}
       <div
         ref={panelRef}
-        className="absolute z-[4] glass-panel p-8 md:p-12"
+        className="absolute z-[4] glass-panel p-6 sm:p-8 md:p-12 w-[90vw] md:w-[44vw] max-w-[560px]"
         style={{
-          left: '7vw',
-          top: '14vh',
-          width: 'min(44vw, 560px)',
-          minWidth: '320px',
+          left: '5vw',
+          top: '20vh',
           opacity: 0,
         }}
       >

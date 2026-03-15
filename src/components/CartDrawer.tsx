@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export default function CartDrawer() {
+  const navigate = useNavigate();
   const { isCartOpen, toggleCart, cart, removeFromCart, updateQuantity, getCartTotal } = useStore();
   const isOpen = isCartOpen;
   const onClose = () => toggleCart(false);
@@ -153,7 +155,13 @@ export default function CartDrawer() {
                 ₹{total.toFixed(2)}
               </span>
             </div>
-            <button className="w-full btn-primary">
+            <button 
+              onClick={() => {
+                onClose();
+                navigate('/checkout');
+              }}
+              className="w-full btn-primary"
+            >
               Proceed to Checkout
             </button>
             <p className="text-center text-farm-cream/40 text-xs">

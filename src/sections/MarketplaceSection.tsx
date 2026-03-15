@@ -2,34 +2,12 @@ import { useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { Check, ShoppingBag, Star } from 'lucide-react';
 
-import { useStore } from '../store/useStore';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-  unit: string;
-  rating: number;
-  reviews: number;
-  isFresh?: boolean;
-  freeDelivery?: boolean;
-}
-
-const products: Product[] = [
-  { id: '1', name: 'Organic Apples', price: 180, image: '/marketplace_fruit.jpg', category: 'Fruits', unit: 'kg', rating: 4.8, reviews: 124, isFresh: true, freeDelivery: true },
-  { id: '2', name: 'Fresh Carrots', price: 40, image: '/marketplace_veg.jpg', category: 'Vegetables', unit: 'kg', rating: 4.6, reviews: 89, isFresh: true },
-  { id: '3', name: 'Farm Eggs', price: 90, image: '/marketplace_dairy.jpg', category: 'Dairy', unit: 'dozen', rating: 4.9, reviews: 215, freeDelivery: true },
-  { id: '4', name: 'Mixed Berries', price: 250, image: '/marketplace_fruit.jpg', category: 'Fruits', unit: 'pack', rating: 4.7, reviews: 156, isFresh: true },
-  { id: '5', name: 'Broccoli', price: 60, image: '/marketplace_veg.jpg', category: 'Vegetables', unit: 'head', rating: 4.5, reviews: 78, isFresh: true },
-  { id: '6', name: 'Fresh Milk', price: 70, image: '/marketplace_dairy.jpg', category: 'Dairy', unit: 'L', rating: 4.9, reviews: 342, freeDelivery: true },
-];
+import { useStore, type Product } from '../store/useStore';
 
 const categories = ['All', 'Fruits', 'Vegetables', 'Dairy'];
 
 export default function MarketplaceSection() {
-  const { addToCart, toggleCart, searchQuery } = useStore();
+  const { addToCart, toggleCart, searchQuery, products } = useStore();
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);

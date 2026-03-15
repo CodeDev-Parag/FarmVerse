@@ -156,12 +156,10 @@ export default function FreshSection() {
       {/* Glass Panel */}
       <div
         ref={panelRef}
-        className="absolute z-[4] glass-panel p-8 md:p-12"
+        className="absolute z-[4] glass-panel p-6 sm:p-8 md:p-12 w-[90vw] md:w-[40vw] max-w-[520px]"
         style={{
-          left: '7vw',
+          left: '5vw',
           top: '14vh',
-          width: 'min(40vw, 520px)',
-          minWidth: '300px',
           opacity: 0,
         }}
       >

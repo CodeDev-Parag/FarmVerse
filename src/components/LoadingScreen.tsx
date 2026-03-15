@@ -11,16 +11,22 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const horizonRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const isCompleting = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
+          if (isCompleting.current) return;
+          isCompleting.current = true;
+          
           gsap.to(containerRef.current, {
             opacity: 0,
             duration: 0.8,
             ease: 'power2.inOut',
-            onComplete,
+            onComplete: () => onCompleteRef.current(),
           });
         },
       });
@@ -29,39 +35,39 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       tl.fromTo(
         sunRef.current,
         { y: 200, scale: 0.5, opacity: 0 },
-        { y: 0, scale: 1, opacity: 1, duration: 2, ease: 'power2.out' }
+        { y: 0, scale: 1, opacity: 1, duration: 1.5, ease: 'power2.out', force3D: true }
       );
 
       // Horizon glow
       tl.fromTo(
         horizonRef.current,
         { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' },
-        '-=1.5'
+        { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out', force3D: true },
+        '-=1.2'
       );
 
       // Text reveal
       tl.fromTo(
         textRef.current,
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
-        '-=1'
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', force3D: true },
+        '-=0.8'
       );
 
       // Progress bar fill
       tl.fromTo(
         progressRef.current,
         { scaleX: 0 },
-        { scaleX: 1, duration: 1.5, ease: 'power2.inOut' },
+        { scaleX: 1, duration: 1.2, ease: 'power2.inOut', force3D: true },
         '-=0.5'
       );
 
       // Hold and fade out
-      tl.to({}, { duration: 0.5 });
+      tl.to({}, { duration: 0.2 });
     }, containerRef);
 
     return () => ctx.revert();
-  }, [onComplete]);
+  }, []); // Empty deps — animation runs exactly once
 
   return (
     <div
@@ -72,7 +78,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       {/* Sun */}
       <div
         ref={sunRef}
-        className="absolute w-32 h-32 rounded-full"
+        className="absolute w-32 h-32 rounded-full will-change-transform"
         style={{
           background: 'radial-gradient(circle, #F3D17A 0%, #D4A03A 50%, transparent 70%)',
           boxShadow: '0 0 80px rgba(212, 160, 58, 0.6), 0 0 120px rgba(212, 160, 58, 0.3)',
@@ -83,7 +89,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       {/* Horizon glow */}
       <div
         ref={horizonRef}
-        className="absolute bottom-0 left-0 right-0 h-1/2"
+        className="absolute bottom-0 left-0 right-0 h-1/2 will-change-transform"
         style={{
           background: 'linear-gradient(180deg, rgba(212, 160, 58, 0.3) 0%, transparent 60%)',
         }}
@@ -130,7 +136,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       </div>
 
       {/* Logo text */}
-      <div ref={textRef} className="relative z-10 text-center">
+      <div ref={textRef} className="relative z-10 text-center will-change-transform">
         <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tight">
           <span className="text-farm-cream">Farm</span>
           <span className="text-gradient-gold">Verse</span>
@@ -144,7 +150,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-48 h-1 bg-farm-cream/10 rounded-full overflow-hidden">
         <div
           ref={progressRef}
-          className="h-full bg-gradient-to-r from-farm-gold to-[#F3D17A] rounded-full origin-left"
+          className="h-full bg-gradient-to-r from-farm-gold to-[#F3D17A] rounded-full origin-left will-change-transform"
         />
       </div>
     </div>

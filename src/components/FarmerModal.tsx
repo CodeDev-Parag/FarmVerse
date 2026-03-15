@@ -106,10 +106,10 @@ export default function FarmerModal() {
       {/* Modal */}
       <div
         ref={modalRef}
-        className="fixed inset-0 flex items-center justify-center z-[160] p-4"
+        className={`fixed inset-0 flex items-center justify-center z-[160] p-4 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         style={{ opacity: 0 }}
       >
-        <div className="relative w-full max-w-lg">
+        <div className="relative w-full max-w-sm">
           {/* SVG Border for draw animation */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
@@ -131,7 +131,7 @@ export default function FarmerModal() {
 
           {/* Content */}
           <div
-            className="glass-panel p-8 relative"
+            className="glass-panel p-5 sm:p-6 relative"
             style={{ background: 'rgba(11, 58, 46, 0.95)' }}
           >
             {/* Close button */}
@@ -158,16 +158,16 @@ export default function FarmerModal() {
                 </div>
               ) : (
                 <>
-                  <h2 className="text-3xl font-heading font-bold text-farm-cream mb-2">
+                  <h2 className="text-2xl font-heading font-bold text-farm-cream mb-1.5">
                     Join Farm<span className="text-farm-gold">Verse</span>
                   </h2>
-                  <p className="text-farm-cream/60 mb-6">
+                  <p className="text-sm text-farm-cream/60 mb-4 leading-relaxed">
                     Sell your produce directly to customers. No middlemen, fair prices.
                   </p>
 
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-3">
                     <div>
-                      <label className="block text-sm text-farm-cream/80 mb-1">
+                      <label className="block text-xs font-medium text-farm-cream/80 mb-1">
                         Full Name
                       </label>
                       <input
@@ -176,13 +176,13 @@ export default function FarmerModal() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
+                        className="w-full px-3 py-2 text-sm bg-farm-cream/5 border border-farm-cream/20 rounded-lg text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
                         placeholder="John Smith"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm text-farm-cream/80 mb-1">
+                      <label className="block text-xs font-medium text-farm-cream/80 mb-1">
                         Email Address
                       </label>
                       <input
@@ -191,13 +191,13 @@ export default function FarmerModal() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
+                        className="w-full px-3 py-2 text-sm bg-farm-cream/5 border border-farm-cream/20 rounded-lg text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
                         placeholder="john@farm.com"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm text-farm-cream/80 mb-1">
+                      <label className="block text-xs font-medium text-farm-cream/80 mb-1">
                         Farm Name
                       </label>
                       <input
@@ -206,13 +206,13 @@ export default function FarmerModal() {
                         value={formData.farmName}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
+                        className="w-full px-3 py-2 text-sm bg-farm-cream/5 border border-farm-cream/20 rounded-lg text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
                         placeholder="Green Valley Farm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm text-farm-cream/80 mb-1">
+                      <label className="block text-xs font-medium text-farm-cream/80 mb-1">
                         Location
                       </label>
                       <input
@@ -221,13 +221,13 @@ export default function FarmerModal() {
                         value={formData.location}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
+                        className="w-full px-3 py-2 text-sm bg-farm-cream/5 border border-farm-cream/20 rounded-lg text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors"
                         placeholder="City, Country"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm text-farm-cream/80 mb-1">
+                      <label className="block text-xs font-medium text-farm-cream/80 mb-1">
                         Products You Grow
                       </label>
                       <textarea
@@ -235,8 +235,8 @@ export default function FarmerModal() {
                         value={formData.products}
                         onChange={handleChange}
                         required
-                        rows={3}
-                        className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors resize-none"
+                        rows={2}
+                        className="w-full px-3 py-2 text-sm bg-farm-cream/5 border border-farm-cream/20 rounded-lg text-farm-cream placeholder-farm-cream/30 focus:outline-none focus:border-farm-gold transition-colors resize-none"
                         placeholder="Vegetables, fruits, dairy..."
                       />
                     </div>
@@ -244,7 +244,7 @@ export default function FarmerModal() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-70"
+                      className="w-full btn-primary py-2.5 text-sm flex items-center justify-center gap-2 disabled:opacity-70"
                     >
                       {isSubmitting ? (
                         <>

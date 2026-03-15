@@ -12,4 +12,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'gsap-vendor': ['gsap', '@gsap/react'],
+          'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
+          'state-vendor': ['zustand']
+        }
+      }
+    }
+  }
 });

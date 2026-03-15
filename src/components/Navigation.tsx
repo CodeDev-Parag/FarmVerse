@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ShoppingCart, Menu, X, Search } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User as UserIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '../store/useStore';
 
@@ -16,7 +17,8 @@ const navLinks = [
 ];
 
 export default function Navigation({ onNavigate }: NavigationProps) {
-  const { cart, toggleCart, searchQuery, setSearchQuery } = useStore();
+  const navigate = useNavigate();
+  const { cart, toggleCart, searchQuery, setSearchQuery, user, userRole } = useStore();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -45,9 +47,9 @@ export default function Navigation({ onNavigate }: NavigationProps) {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-[100] opacity-0 -translate-y-full pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-[100] opacity-0 -translate-y-full"
       >
-        <div className="mx-4 mt-4 pointer-events-auto">
+        <div className="mx-4 mt-4">
           <div className="glass-panel px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
             {/* Logo */}
             <a
@@ -109,6 +111,21 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
             {/* Actions */}
             <div className="flex items-center gap-4">
+              {/* Account button */}
+              <button
+                onClick={() => {
+                  if (user) {
+                    navigate(userRole === 'farmer' ? '/farmer-dashboard' : '/account');
+                  } else {
+                    navigate('/auth');
+                  }
+                }}
+                className="p-2 text-farm-cream/80 hover:text-farm-cream hover:bg-farm-cream/10 rounded-full transition-colors duration-300"
+                aria-label="Account"
+              >
+                <UserIcon className="w-5 h-5" />
+              </button>
+
               {/* Cart button */}
               <button
                 onClick={() => toggleCart(true)}
@@ -141,7 +158,7 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mx-4 mt-2 pointer-events-auto">
+          <div className="md:hidden mx-4 mt-2">
             <div className="glass-panel p-6 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a

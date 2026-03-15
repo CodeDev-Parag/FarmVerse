@@ -1,166 +1,103 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, Suspense, lazy } from 'react';
+import ProtectedRoute from './components/ProtectedRoute';
 
-// Components
-import LoadingScreen from './components/LoadingScreen';
-import ScrollProgress from './components/ScrollProgress';
-import Navigation from './components/Navigation';
-import HeroSection from './sections/HeroSection';
-import FreshSection from './sections/FreshSection';
-import SmartSection from './sections/SmartSection';
-import SustainableSection from './sections/SustainableSection';
-import MovementSection from './sections/MovementSection';
-import MarketplaceSection from './sections/MarketplaceSection';
-import StoriesSection from './sections/StoriesSection';
-import ContactSection from './sections/ContactSection';
-import CartDrawer from './components/CartDrawer';
-import FarmerModal from './components/FarmerModal';
+// Lazy load route components for code splitting
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
+const FarmerDashboard = lazy(() => import('./pages/FarmerDashboard'));
+const CustomerDashboard = lazy(() => import('./pages/CustomerDashboard'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+
 import { useStore } from './store/useStore';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
-// Cart Context
-export interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-
+import { supabase } from './lib/supabase';
+import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 function App() {
-  // Use selectors to prevent unnecessary re-renders of the root component
-  const isLoading = useStore((state) => state.isLoading);
-  const setIsLoading = useStore((state) => state.setIsLoading);
+  const { setUser, setIsAuthInitialized, setUserRole, fetchProducts } = useStore();
 
-  const mainRef = useRef<HTMLDivElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
-
-  // Initialize Lenis smooth scroll
   useEffect(() => {
-    // Prevent multiple initializations in StrictMode
-    if (lenisRef.current) return;
-
-    console.log('App: Initializing Lenis');
-    const lenis = new Lenis({
-      duration: 0.8,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
+    // Check active sessions and sets the user
+    supabase.auth.getSession().then((res: any) => {
+      const sessionUser = res.data.session?.user;
+      setUser(sessionUser ?? null);
+      if (sessionUser) {
+        // Intercept role from localStorage (set before Google SSO redirect)
+        const pendingRole = localStorage.getItem('pending_oauth_role');
+        
+        if (pendingRole && (pendingRole === 'farmer' || pendingRole === 'customer')) {
+          // Update Supabase user metadata with the role
+          supabase.auth.updateUser({ data: { role: pendingRole } });
+          setUserRole(pendingRole as 'farmer' | 'customer');
+          
+          // Clean up localStorage
+          localStorage.removeItem('pending_oauth_role');
+        } else {
+          const role = sessionUser.user_metadata?.role || (sessionUser.email === 'admin@farmverse.com' ? 'admin' : 'customer');
+          setUserRole(role);
+        }
+      }
+      setIsAuthInitialized(true);
+      fetchProducts();
     });
 
-    lenisRef.current = lenis;
-
-    // Connect Lenis to GSAP ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
-
-    const updateLenis = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateLenis);
-    gsap.ticker.lagSmoothing(0);
-
-    // Safety timeout: If loading takes too long, force it to complete
-    const safetyTimeout = setTimeout(() => {
-      if (isLoading) {
-        console.warn('App: Loading timed out, forcing completion');
-        setIsLoading(false);
+    // Listen for changes on auth state (log in, log out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+        const sessionUser = session?.user;
+        setUser(sessionUser ?? null);
+        if (sessionUser) {
+          const pendingRole = localStorage.getItem('pending_oauth_role');
+          
+          if (pendingRole && (pendingRole === 'farmer' || pendingRole === 'customer')) {
+            supabase.auth.updateUser({ data: { role: pendingRole } });
+            setUserRole(pendingRole as 'farmer' | 'customer');
+            localStorage.removeItem('pending_oauth_role');
+          } else {
+            const role = sessionUser.user_metadata?.role || (sessionUser.email === 'admin@farmverse.com' ? 'admin' : 'customer');
+            setUserRole(role);
+          }
+        } else {
+          setUserRole(null);
+        }
+        setIsAuthInitialized(true);
+        fetchProducts();
       }
-    }, 6000);
+    );
 
-    return () => {
-      console.log('App: Cleaning up Lenis');
-      clearTimeout(safetyTimeout);
-      gsap.ticker.remove(updateLenis);
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, []); // Remove isLoading dependency to prevent re-init
-
-  // Handle loading complete
-  const handleLoadingComplete = () => {
-    console.log('App: Loading complete');
-    setIsLoading(false);
-  };
-
-
+    return () => subscription.unsubscribe();
+  }, [setUser]);
 
   return (
-    <>
-      {/* Loading Screen */}
-      {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+    <Router>
+      <Suspense fallback={
+        <div className="min-h-screen bg-farm-green flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-farm-gold/30 border-t-farm-gold rounded-full animate-spin"></div>
+        </div>
+      }>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          
+          {/* Protected Customer Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/account" element={<CustomerDashboard />} />
+          </Route>
 
-      {/* Scroll Progress */}
-      <ScrollProgress />
+          {/* Protected Farmer Routes */}
+          <Route element={<ProtectedRoute requiredRole="farmer" />}>
+            <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
+          </Route>
 
-      {/* Navigation */}
-      <Navigation
-        onNavigate={(href) => {
-          if (lenisRef.current) {
-            lenisRef.current.scrollTo(href);
-          } else {
-            const element = document.querySelector(href);
-            element?.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
-      />
-
-      {/* Main Content */}
-      <main
-        ref={mainRef}
-        className={`relative transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-      >
-        <HeroSection
-          onExploreClick={() => {
-            if (lenisRef.current) {
-              lenisRef.current.scrollTo('#marketplace');
-            } else {
-              const marketplace = document.getElementById('marketplace');
-              marketplace?.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-        />
-        <FreshSection />
-        <SmartSection />
-        <SustainableSection />
-        <MovementSection
-          onMeetFarmersClick={() => {
-            if (lenisRef.current) {
-              lenisRef.current.scrollTo('#stories');
-            } else {
-              const stories = document.getElementById('stories');
-              stories?.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-        />
-        <MarketplaceSection />
-        <StoriesSection />
-        <ContactSection />
-      </main>
-
-      {/* Cart Drawer - Now managed by its own connection to store or we pass basic props if it's not refactored yet.
-          For now, we will refactor CartDrawer to use store internally, so we don't need to pass props.
-          But wait, the task list says "Update MarketplaceSection and CartDrawer to use Zustand".
-          So I should remove props here.
-       */}
-      <CartDrawer />
-
-      {/* Farmer Registration Modal */}
-      <FarmerModal />
-
-      {/* Grain Overlay */}
-      <div className="grain-overlay" />
-    </>
+          {/* Protected Admin Routes */}
+          <Route element={<ProtectedRoute requiredRole="admin" />}>
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 

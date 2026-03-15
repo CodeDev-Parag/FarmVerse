@@ -1,11 +1,12 @@
 import { useRef, useLayoutEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { Mail, Phone, MapPin, Send, Loader2, Check, Instagram, Twitter, Linkedin } from 'lucide-react';
 
-import { useStore } from '../store/useStore';
+
 
 export default function ContactSection() {
-  const { toggleFarmerModal } = useStore();
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
@@ -153,16 +154,16 @@ export default function ContactSection() {
             </div>
 
             {/* Farmer CTA */}
-            <div className="p-6 bg-farm-gold/10 border border-farm-gold/20 rounded-xl">
-              <h3 className="text-lg font-semibold text-farm-cream mb-2">
+            <div className="p-5 bg-farm-gold/10 border border-farm-gold/20 rounded-xl max-w-sm">
+              <h3 className="text-base font-semibold text-farm-cream mb-1">
                 Are you a farmer?
               </h3>
-              <p className="text-sm text-farm-cream/70 mb-4">
+              <p className="text-sm text-farm-cream/70 mb-3">
                 Join our marketplace and sell directly to customers.
               </p>
               <button
-                onClick={() => toggleFarmerModal(true)}
-                className="text-farm-gold font-medium hover:underline"
+                onClick={() => navigate('/auth?type=signup&role=farmer')}
+                className="text-farm-gold text-sm font-medium hover:underline"
               >
                 Apply to sell →
               </button>

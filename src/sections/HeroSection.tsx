@@ -216,12 +216,10 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
       {/* Glass Panel */}
       <div
         ref={panelRef}
-        className="absolute z-[4] glass-panel p-8 md:p-12"
+        className="absolute z-[4] glass-panel p-6 sm:p-8 md:p-12 w-[90vw] md:w-[46vw] max-w-[600px]"
         style={{
-          left: '7vw',
+          left: '5vw',
           top: '18vh',
-          width: 'min(46vw, 600px)',
-          minWidth: '320px',
           opacity: 0,
         }}
       >
