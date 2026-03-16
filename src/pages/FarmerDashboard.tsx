@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Plus, LogOut, ImagePlus, Loader2, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 
 export default function FarmerDashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser, products, setProducts } = useStore();
   const myProducts = products.filter(p => !p.farmer_id || p.farmer_id === user?.id);
@@ -99,7 +101,7 @@ export default function FarmerDashboard() {
         <nav className="flex-1 space-y-2">
           <button className="w-full flex items-center gap-3 px-4 py-3 bg-farm-cream/10 text-farm-cream rounded-xl transition-colors">
             <Package className="w-5 h-5" />
-            <span className="font-medium">My Products</span>
+            <span className="font-medium">{t('farmerDashboard.sidebar.dashboard')}</span>
           </button>
         </nav>
 
@@ -110,12 +112,12 @@ export default function FarmerDashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{user?.email}</p>
-              <p className="text-xs text-farm-cream/50">Farmer Account</p>
+              <p className="text-xs text-farm-cream/50">{t('farmerDashboard.sidebar.account')}</p>
             </div>
           </div>
           <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
             <LogOut className="w-5 h-5" />
-            <span className="font-medium">Sign Out</span>
+            <span className="font-medium">{t('farmerDashboard.sidebar.signOut')}</span>
           </button>
         </div>
       </aside>
@@ -127,24 +129,24 @@ export default function FarmerDashboard() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h1 className="text-3xl font-heading font-bold mb-2">My Products</h1>
-              <p className="text-farm-cream/60">Manage your farm listings and inventory.</p>
+              <h1 className="text-3xl font-heading font-bold mb-2">{t('farmerDashboard.title')}</h1>
+              <p className="text-farm-cream/60">{t('farmerDashboard.subtitle')}</p>
             </div>
             <button onClick={() => setIsAdding(!isAdding)} className="btn-primary flex items-center gap-2">
               <Plus className="w-5 h-5" />
-              Add Product
+              {t('farmerDashboard.productsList.addProduct')}
             </button>
           </div>
 
           {/* Add Product Form */}
           {isAdding && (
             <div className="glass-panel p-8 mb-10 border border-farm-gold/30 animate-in fade-in slide-in-from-top-4">
-              <h3 className="text-xl font-bold mb-6">New Product Listing</h3>
+              <h3 className="text-xl font-bold mb-6">{t('farmerDashboard.addProductModal.addTitle')}</h3>
               <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
                 {/* Image Upload */}
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-farm-cream/80">Product Image</label>
+                  <label className="block text-sm font-medium text-farm-cream/80">{t('farmerDashboard.addProductModal.image')}</label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className="w-full aspect-video rounded-xl border-2 border-dashed border-farm-cream/20 bg-farm-cream/5 hover:bg-farm-cream/10 hover:border-farm-gold/50 transition-colors flex flex-col items-center justify-center cursor-pointer overflow-hidden relative"
@@ -171,26 +173,26 @@ export default function FarmerDashboard() {
                 {/* Details */}
                 <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-farm-cream/80 mb-2">Product Name</label>
+                    <label className="block text-sm font-medium text-farm-cream/80 mb-2">{t('farmerDashboard.addProductModal.name')}</label>
                     <input type="text" required value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="e.g., Organic Tomatoes" />
                   </div>
                   <div className="grid grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-sm font-medium text-farm-cream/80 mb-2">Price (₹)</label>
+                      <label className="block text-sm font-medium text-farm-cream/80 mb-2">{t('farmerDashboard.addProductModal.price')}</label>
                       <input type="number" min="1" step="0.01" required value={newProduct.price} onChange={e => setNewProduct({...newProduct, price: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="120" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-farm-cream/80 mb-2">Stock (kg)</label>
+                      <label className="block text-sm font-medium text-farm-cream/80 mb-2">{t('farmerDashboard.addProductModal.stock')}</label>
                       <input type="number" min="1" required value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="50" />
                     </div>
                   </div>
                   
                   <div className="pt-4 flex justify-end gap-3">
                     <button type="button" onClick={() => setIsAdding(false)} className="px-6 py-3 rounded-xl border border-farm-cream/20 hover:bg-farm-cream/10 transition-colors">
-                      Cancel
+                      {t('farmerDashboard.addProductModal.cancel')}
                     </button>
                     <button type="submit" disabled={loading} className="btn-primary min-w-[140px] flex items-center justify-center">
-                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'List Product'}
+                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('farmerDashboard.addProductModal.save')}
                     </button>
                   </div>
                 </div>
@@ -202,8 +204,8 @@ export default function FarmerDashboard() {
           {myProducts.length === 0 ? (
             <div className="glass-panel p-16 text-center border border-farm-cream/10">
               <Package className="w-16 h-16 text-farm-cream/20 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">No products yet</h3>
-              <p className="text-farm-cream/60">Upload your first batch of produce to start selling.</p>
+              <h3 className="text-xl font-bold mb-2">{t('farmerDashboard.productsList.noProducts')}</h3>
+              <p className="text-farm-cream/60">{t('farmerDashboard.productsList.noProductsDesc')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -218,7 +220,7 @@ export default function FarmerDashboard() {
                   <div className="p-5">
                     <h3 className="font-heading font-bold text-xl text-farm-cream mb-1">{product.name}</h3>
                     <p className="text-farm-cream/60 text-sm flex items-center gap-2">
-                       <Package className="w-4 h-4" /> {(product as any).stock || 'Available'} in stock
+                       <Package className="w-4 h-4" /> {(product as any).stock || 'Available'} {t('farmerDashboard.productsList.stock')}
                     </p>
                   </div>
                 </div>

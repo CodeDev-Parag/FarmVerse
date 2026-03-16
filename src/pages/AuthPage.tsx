@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Mail, Lock, Loader2, Wheat } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 
 export default function AuthPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { setUser, user, setUserRole } = useStore();
@@ -119,12 +121,12 @@ export default function AuthPage() {
       <div className="w-full max-w-md p-8 glass-panel z-10 relative" style={{ background: 'rgba(11, 58, 46, 0.85)' }}>
         <div className="text-center mb-8">
           <h2 className="text-3xl font-heading font-bold mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+            {isLogin ? t('auth.signInTitle') : t('auth.signUpTitle')}
           </h2>
           <p className="text-farm-cream/60">
             {isLogin 
-              ? 'Sign in to your FarmVerse account' 
-              : 'Join the marketplace for fresh, fair produce'}
+              ? t('auth.signInSubtitle') 
+              : t('auth.signUpSubtitle')}
           </p>
         </div>
 
@@ -143,7 +145,7 @@ export default function AuthPage() {
               onClick={() => setIsFarmer(true)}
             >
               <Wheat className="w-4 h-4" />
-              Farmer
+              {t('auth.roleFarmer')}
             </button>
           </div>
         ) : (
@@ -153,7 +155,7 @@ export default function AuthPage() {
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${!isFarmer ? 'bg-farm-cream text-farm-green' : 'text-farm-cream/60 hover:text-farm-cream'}`}
               onClick={() => setIsFarmer(false)}
             >
-              Customer
+              {t('auth.roleCustomer')}
             </button>
             <button
               type="button"
@@ -161,7 +163,7 @@ export default function AuthPage() {
               onClick={() => setIsFarmer(true)}
             >
               <Wheat className="w-4 h-4" />
-              Farmer
+              {t('auth.roleFarmer')}
             </button>
           </div>
         )}
@@ -169,7 +171,7 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-farm-cream/80 mb-1">
-              Email Address
+              {t('auth.email')}
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-farm-cream/40">
@@ -188,7 +190,7 @@ export default function AuthPage() {
 
           <div>
             <label className="block text-sm font-medium text-farm-cream/80 mb-1">
-              Password
+              {t('auth.password')}
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-farm-cream/40">
@@ -211,7 +213,7 @@ export default function AuthPage() {
             disabled={loading}
             className="w-full btn-primary py-3 flex items-center justify-center gap-2 disabled:opacity-70 mt-6"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? t('auth.signInBtn') : t('auth.signUpBtn'))}
           </button>
         </form>
 
@@ -235,17 +237,17 @@ export default function AuthPage() {
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
             </svg>
-            Google
+            {t('auth.googleBtn')}
           </button>
         </div>
 
         <p className="mt-8 text-center text-sm text-farm-cream/60">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          {isLogin ? `${t('auth.noAccount')} ` : `${t('auth.hasAccount')} `}
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-farm-gold hover:underline font-medium"
           >
-            {isLogin ? 'Sign up' : 'Sign in'}
+            {isLogin ? t('auth.signUpLink') : t('auth.signInLink')}
           </button>
         </p>
       </div>

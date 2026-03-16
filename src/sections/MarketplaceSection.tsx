@@ -1,12 +1,14 @@
 import { useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { Check, ShoppingBag, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { useStore, type Product } from '../store/useStore';
 
 const categories = ['All', 'Fruits', 'Vegetables', 'Dairy'];
 
 export default function MarketplaceSection() {
+  const { t } = useTranslation();
   const { addToCart, toggleCart, searchQuery, products } = useStore();
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -108,10 +110,10 @@ export default function MarketplaceSection() {
         {/* Heading */}
         <div ref={headingRef} className="mb-12">
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-farm-cream mb-4">
-            Browse the <span className="text-gradient-gold">Marketplace.</span>
+            {t('marketplace.titlePart1')} <span className="text-gradient-gold">{t('marketplace.titlePart2')}</span>
           </h2>
           <p className="text-lg text-farm-cream/70 max-w-xl">
-            From field to cart—no middlemen, no markup. Fresh produce delivered directly from local farms.
+            {t('marketplace.subtitle')}
           </p>
 
           {/* Cart quick access */}
@@ -120,7 +122,7 @@ export default function MarketplaceSection() {
             className="mt-6 inline-flex items-center gap-2 px-6 py-3 glass-panel text-farm-cream hover:bg-farm-cream/10 transition-colors duration-300"
           >
             <ShoppingBag className="w-5 h-5 text-farm-gold" />
-            <span>View Cart</span>
+            <span>{t('cart.title')}</span>
           </button>
         </div>
 
@@ -135,7 +137,10 @@ export default function MarketplaceSection() {
                 : 'bg-farm-cream/5 text-farm-cream/70 border border-farm-cream/10 hover:bg-farm-cream/10'
                 }`}
             >
-              {category}
+              {category === 'All' ? t('marketplace.categories.all') :
+               category === 'Fruits' ? t('marketplace.categories.fruits') :
+               category === 'Vegetables' ? t('marketplace.categories.vegetables') :
+               category}
             </button>
           ))}
         </div>
@@ -163,7 +168,7 @@ export default function MarketplaceSection() {
                 <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
                   {product.isFresh && (
                     <span className="px-2 py-1 bg-green-500/80 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded">
-                      Fresh
+                      {t('fresh.badge')}
                     </span>
                   )}
                   {product.freeDelivery && (
@@ -206,12 +211,12 @@ export default function MarketplaceSection() {
                     {addedProducts.has(product.id) ? (
                       <>
                         <Check className="w-4 h-4" />
-                        Added
+                        {t('marketplace.stock.inStock')}
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="w-4 h-4" />
-                        Add to Cart
+                        {t('marketplace.addToCart')}
                       </>
                     )}
                   </button>

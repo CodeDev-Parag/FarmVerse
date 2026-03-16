@@ -1,0 +1,344 @@
+{
+  "nav": {
+    "marketplace": "Marketplace",
+    "technology": "Technology",
+    "sustainability": "Sustainability",
+    "contact": "Contact",
+    "searchPlaceholder": "Search fresh produce..."
+  },
+  "hero": {
+    "badge": "FARM TO TABLE • DIRECT • FRESH",
+    "titlePart1": "Fresh from the",
+    "titlePart2": "Farm.",
+    "subtitle": "Skip the middlemen. Buy organic, farm-fresh produce directly from local farmers who care about quality and sustainability.",
+    "exploreMarket": "Explore Market",
+    "applyToSell": "Apply to Sell"
+  },
+  "fresh": {
+    "badge": "DIRECT SOURCING",
+    "titlePart1": "As Fresh as it",
+    "titlePart2": "Gets.",
+    "subtitle": "Experience the difference of produce that's harvested at peak ripeness and delivered straight to your door, without sitting in warehouses.",
+    "harvested": "Harvested Today",
+    "harvestedDesc": "Produce picked at zero hour",
+    "direct": "Direct Transit",
+    "directDesc": "No middleman warehouses",
+    "quality": "Quality Checked",
+    "qualityDesc": "100% organic certified",
+    "stats": {
+      "farmers": "100+",
+      "farmersLabel": "Local Farmers",
+      "delivery": "24h",
+      "deliveryLabel": "Farm to Door",
+      "produce": "Fresh",
+      "produceLabel": "Daily Produce"
+    }
+  },
+  "smart": {
+    "titlePart1": "Smart",
+    "titlePart2": "Farming.",
+    "subtitle": "We use cutting-edge agricultural technology and data-driven insights to help our farmers optimize their yield while preserving the environment.",
+    "features": {
+      "title1": "Precision Agriculture",
+      "desc1": "IoT sensors monitor soil moisture and nutrient levels in real-time, ensuring optimal growing conditions while minimizing water usage.",
+      "title2": "Drone Surveillance",
+      "desc2": "Aerial mapping helps identify crop stress early, allowing for targeted intervention and reducing the need for broad-spectrum treatments.",
+      "title3": "Predictive Analytics",
+      "desc3": "AI models process weather patterns and historical data to guide planting and harvesting schedules for maximum yield."
+    }
+  },
+  "sustainable": {
+    "badge": "EARTH FIRST",
+    "titlePart1": "Farming for",
+    "titlePart2": "Tomorrow.",
+    "subtitle": "Our commitment goes beyond fresh food. We champion regenerative agriculture practices that heal the soil, conserve water, and promote biodiversity.",
+    "stats": {
+      "water": "40%",
+      "waterLabel": "Less Water Used",
+      "carbon": "Zero",
+      "carbonLabel": "Carbon Footprint",
+      "soil": "100%",
+      "soilLabel": "Organic Soil"
+    },
+    "card1": {
+      "title": "Regenerative Soil",
+      "desc": "Building topsoil health naturally"
+    },
+    "card2": {
+      "title": "Water Conservation",
+      "desc": "Smart drip irrigation systems"
+    },
+    "card3": {
+      "title": "Biodiversity",
+      "desc": "Protecting local ecosystems"
+    }
+  },
+  "movement": {
+    "badge": "OUR COMMUNITY",
+    "titlePart1": "Join the",
+    "titlePart2": "Movement.",
+    "subtitle": "When you choose FarmVerse, you're not just buying food. You're supporting local livelihoods and building a more resilient food system.",
+    "meetFarmers": "Meet Our Farmers"
+  },
+  "marketplace": {
+    "badge": "FRESH ARRIVALS",
+    "titlePart1": "Farm Fresh",
+    "titlePart2": "Market.",
+    "subtitle": "Discover seasonal produce, harvested today and ready for your table.",
+    "search": "Search fresh produce...",
+    "categories": {
+      "all": "All Produce",
+      "vegetables": "Vegetables",
+      "fruits": "Fruits",
+      "grains": "Grains"
+    },
+    "stock": {
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details"
+  },
+  "stories": {
+    "badge": "OUR COMMUNITY",
+    "titlePart1": "Farmer",
+    "titlePart2": "Stories.",
+    "subtitle": "Meet the dedicated people who work the land to bring fresh, sustainable produce to your family's table.",
+    "card1": {
+      "quote": "Sustainable farming isn't just a method, it's a responsibility to future generations.",
+      "author": "Rajesh Kumar",
+      "role": "Organic Wheat Farmer"
+    },
+    "card2": {
+      "quote": "FarmVerse gave me the platform to sell directly to people who value quality.",
+      "author": "Anita Singh",
+      "role": "Vegetable Grower"
+    },
+    "card3": {
+      "quote": "Seeing our produce go straight from the field to a family's table is incredibly rewarding.",
+      "author": "Mohit Sharma",
+      "role": "Orchard Owner"
+    }
+  },
+  "contact": {
+    "badge": "GET IN TOUCH",
+    "titlePart1": "Get in",
+    "titlePart2": "Touch.",
+    "subtitle": "Have questions? Want to partner? We're here to help. Reach out and let's grow together.",
+    "details": {
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location"
+    },
+    "farmerCta": {
+      "title": "Are you a farmer?",
+      "desc": "Join our marketplace and sell directly to customers.",
+      "link": "Apply to sell →"
+    },
+    "form": {
+      "title": "Send us a message",
+      "name": "Your Name",
+      "email": "Email Address",
+      "message": "Message",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successDesc": "We'll get back to you soon."
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "careers": "Careers",
+      "enam": "Government e-NAM",
+      "copyright": "© 2026 FarmVerse. Empowering farmers worldwide.",
+      "madeWith": "Made with ❤️ by Parag"
+    }
+  },
+  "auth": {
+    "signInTitle": "Welcome Back",
+    "signInSubtitle": "Sign in to your FarmVerse account",
+    "signUpTitle": "Join FarmVerse",
+    "signUpSubtitle": "Create an account to start your journey",
+    "roleCustomer": "I want to buy fresh produce",
+    "roleFarmer": "I want to sell my produce",
+    "email": "Email address",
+    "password": "Password",
+    "fullName": "Full Name",
+    "signInBtn": "Sign In",
+    "signUpBtn": "Create Account",
+    "googleBtn": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUpLink": "Sign up",
+    "signInLink": "Sign in",
+    "loading": "Please wait..."
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "emptyDesc": "Looks like you haven't added any fresh produce yet.",
+    "startShopping": "Start Shopping",
+    "total": "Total",
+    "checkout": "Proceed to Checkout"
+  },
+  "checkout": {
+    "title": "Secure Checkout",
+    "subtitle": "Complete your order for fresh farm produce.",
+    "orderSummary": "Order Summary",
+    "total": "Total",
+    "shipping": {
+      "title": "Shipping Details",
+      "fullName": "Full Name",
+      "address": "Street Address",
+      "city": "City",
+      "state": "State",
+      "zip": "ZIP Code",
+      "phone": "Phone Number"
+    },
+    "payment": {
+      "title": "Payment Method",
+      "codTitle": "Cash on Delivery",
+      "codDesc": "Pay when you receive your fresh produce.",
+      "alert": "Currently, we only support Cash on Delivery for all orders to ensure trust and quality verification upon receipt."
+    },
+    "placeOrder": "Place Order (COD)",
+    "placingOrder": "Processing...",
+    "successTitle": "Order Placed Successfully!",
+    "successDesc": "Your farm-fresh produce is on its way. You can track your order in your dashboard.",
+    "viewOrders": "View My Orders",
+    "continueShopping": "Continue Shopping"
+  },
+  "customerDashboard": {
+    "title": "My Orders",
+    "subtitle": "Track your fresh farm produce deliveries.",
+    "noOrders": "No orders yet",
+    "noOrdersDesc": "You haven't placed any orders with local farmers yet.",
+    "startShopping": "Start Shopping",
+    "orderNumber": "Order Number",
+    "date": "Date",
+    "total": "Total",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "qty": "Qty",
+    "support": {
+      "title": "Need Help? Chat with us",
+      "header": "FarmVerse Support",
+      "welcome": "Welcome to Support!",
+      "welcomeDesc": "How can we help with your order?",
+      "placeholder": "Type your message..."
+    },
+    "sidebar": {
+      "myOrders": "My Orders",
+      "account": "Customer Account",
+      "signOut": "Sign Out"
+    },
+    "mandi": {
+      "live": "LIVE",
+      "wheat": "Wheat (Lok-1)",
+      "soybean": "Soybean (Yellow)",
+      "onion": "Onion (Red)",
+      "cotton": "Cotton (BT)",
+      "maize": "Maize",
+      "qtl": "/qtl"
+    }
+  },
+  "farmerDashboard": {
+    "title": "Farmer Overview",
+    "subtitle": "Manage your fresh produce and track your sales.",
+    "quickStats": {
+      "totalRevenue": "Total Revenue",
+      "activeListings": "Active Listings",
+      "completedOrders": "Completed Orders"
+    },
+    "tabs": {
+      "products": "Products",
+      "orders": "Orders",
+      "analytics": "Analytics"
+    },
+    "productsList": {
+      "title": "Your Produce",
+      "addProduct": "Add New Product",
+      "noProducts": "No products listed yet",
+      "noProductsDesc": "Start adding your fresh produce to reach customers.",
+      "price": "Price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "outOfStock": "Out of Stock",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "addProductModal": {
+      "addTitle": "Add New Product",
+      "editTitle": "Edit Product",
+      "name": "Product Name",
+      "description": "Description",
+      "price": "Price (₹)",
+      "stock": "Stock Quantity",
+      "category": "Category",
+      "image": "Image URL",
+      "cancel": "Cancel",
+      "save": "Save Product",
+      "saving": "Saving..."
+    },
+    "ordersList": {
+      "title": "Recent Orders",
+      "noOrders": "No orders yet",
+      "orderId": "Order ID",
+      "customer": "Customer",
+      "date": "Date",
+      "total": "Total",
+      "status": "Status",
+      "items": "Items",
+      "action": "Action",
+      "updateStatus": "Update Status",
+      "updating": "Updating..."
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "account": "Farmer Partner",
+      "signOut": "Sign Out"
+    }
+  },
+  "adminDashboard": {
+    "title": "Admin Console",
+    "subtitle": "Platform overview and management.",
+    "quickStats": {
+      "totalUsers": "Total Users",
+      "totalFarmers": "Total Farmers",
+      "totalProducts": "Total Products",
+      "totalOrders": "Total Orders"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "users": "Users",
+      "orders": "Orders",
+      "support": "Support Chat"
+    },
+    "usersList": {
+      "title": "User Management",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "supportChat": {
+      "title": "Active Support Chats",
+      "selectCustomer": "Select a customer to start chatting",
+      "customer": "Customer",
+      "send": "Send Reply"
+    },
+    "sidebar": {
+      "console": "Console",
+      "account": "System Administrator",
+      "signOut": "Sign Out"
+    }
+  }
+}

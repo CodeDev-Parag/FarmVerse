@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, LogOut, ArrowLeft, Clock, CheckCircle2, Truck, MessageSquare, Send, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 import type { OrderStatus, ChatMessage, Order, CartItem } from '../store/useStore';
 
 export default function CustomerDashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -194,7 +196,7 @@ export default function CustomerDashboard() {
   };
 
   const getStatusText = (status: OrderStatus) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return t(`customerDashboard.status.${status}`);
   };
 
   const statuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered'];
@@ -215,7 +217,7 @@ export default function CustomerDashboard() {
         <nav className="flex-1 space-y-2">
           <button className="w-full flex items-center gap-3 px-4 py-3 bg-farm-cream/10 text-farm-cream rounded-xl transition-colors">
             <Package className="w-5 h-5" />
-            <span className="font-medium">My Orders</span>
+            <span className="font-medium">{t('customerDashboard.sidebar.myOrders')}</span>
           </button>
         </nav>
 
@@ -226,12 +228,12 @@ export default function CustomerDashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{user?.email}</p>
-              <p className="text-xs text-farm-cream/50">Customer Account</p>
+              <p className="text-xs text-farm-cream/50">{t('customerDashboard.sidebar.account')}</p>
             </div>
           </div>
           <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
             <LogOut className="w-5 h-5" />
-            <span className="font-medium">Sign Out</span>
+            <span className="font-medium">{t('customerDashboard.sidebar.signOut')}</span>
           </button>
         </div>
       </aside>
@@ -243,8 +245,8 @@ export default function CustomerDashboard() {
         <div className="relative z-10 max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h1 className="text-3xl font-heading font-bold mb-2">My Orders</h1>
-              <p className="text-farm-cream/60">Track your fresh farm produce deliveries.</p>
+              <h1 className="text-3xl font-heading font-bold mb-2">{t('customerDashboard.title')}</h1>
+              <p className="text-farm-cream/60">{t('customerDashboard.subtitle')}</p>
             </div>
           </div>
 
@@ -253,29 +255,29 @@ export default function CustomerDashboard() {
             <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-farm-green to-transparent z-10 flex items-center pl-4">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                <span className="text-xs font-bold text-farm-gold tracking-wider">LIVE</span>
+                <span className="text-xs font-bold text-farm-gold tracking-wider">{t('customerDashboard.mandi.live')}</span>
               </div>
             </div>
             <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-farm-green to-transparent z-10"></div>
             
             <div className="flex items-center animate-[marquee_20s_linear_infinite] whitespace-nowrap pl-24">
               <div className="flex items-center gap-8 px-4 text-sm font-medium">
-                <span className="text-farm-cream">Wheat (Lok-1): <span className="text-green-400">₹2,850/qtl ▲ (+12)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.wheat')}: <span className="text-green-400">₹2,850{t('customerDashboard.mandi.qtl')} ▲ (+12)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Soybean (Yellow): <span className="text-red-400">₹4,200/qtl ▼ (-35)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.soybean')}: <span className="text-red-400">₹4,200{t('customerDashboard.mandi.qtl')} ▼ (-35)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Onion (Red): <span className="text-green-400">₹1,800/qtl ▲ (+50)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.onion')}: <span className="text-green-400">₹1,800{t('customerDashboard.mandi.qtl')} ▲ (+50)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Cotton (BT): <span className="text-green-400">₹7,100/qtl ▲ (+110)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.cotton')}: <span className="text-green-400">₹7,100{t('customerDashboard.mandi.qtl')} ▲ (+110)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Maize: <span className="text-red-400">₹2,150/qtl ▼ (-5)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.maize')}: <span className="text-red-400">₹2,150{t('customerDashboard.mandi.qtl')} ▼ (-5)</span></span>
                 <span className="text-farm-cream/40">•</span>
                 {/* Duplicate for seamless infinite loop */}
-                <span className="text-farm-cream">Wheat (Lok-1): <span className="text-green-400">₹2,850/qtl ▲ (+12)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.wheat')}: <span className="text-green-400">₹2,850{t('customerDashboard.mandi.qtl')} ▲ (+12)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Soybean (Yellow): <span className="text-red-400">₹4,200/qtl ▼ (-35)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.soybean')}: <span className="text-red-400">₹4,200{t('customerDashboard.mandi.qtl')} ▼ (-35)</span></span>
                 <span className="text-farm-cream/40">•</span>
-                <span className="text-farm-cream">Onion (Red): <span className="text-green-400">₹1,800/qtl ▲ (+50)</span></span>
+                <span className="text-farm-cream">{t('customerDashboard.mandi.onion')}: <span className="text-green-400">₹1,800{t('customerDashboard.mandi.qtl')} ▲ (+50)</span></span>
               </div>
             </div>
           </div>
@@ -284,10 +286,10 @@ export default function CustomerDashboard() {
           {orders.length === 0 ? (
             <div className="glass-panel p-16 text-center border border-farm-cream/10">
               <Package className="w-16 h-16 text-farm-cream/20 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">No orders yet</h3>
-              <p className="text-farm-cream/60 mb-6">You haven't placed any orders with local farmers yet.</p>
+              <h3 className="text-xl font-bold mb-2">{t('customerDashboard.noOrders')}</h3>
+              <p className="text-farm-cream/60 mb-6">{t('customerDashboard.noOrdersDesc')}</p>
               <button onClick={() => navigate('/')} className="btn-primary">
-                Start Shopping
+                {t('customerDashboard.startShopping')}
               </button>
             </div>
           ) : (
@@ -296,15 +298,15 @@ export default function CustomerDashboard() {
                 <div key={order.id} className="glass-panel border border-farm-cream/10 overflow-hidden">
                   <div className="p-6 border-b border-farm-cream/10 flex flex-wrap items-center justify-between gap-4 bg-farm-cream/5">
                     <div>
-                      <p className="text-sm text-farm-cream/60 mb-1">Order Number</p>
+                      <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.orderNumber')}</p>
                       <p className="font-mono font-medium">{order.short_id || order.id.substring(0,8)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-farm-cream/60 mb-1">Date</p>
+                      <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.date')}</p>
                       <p className="font-medium">{new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-farm-cream/60 mb-1">Total</p>
+                      <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.total')}</p>
                       <p className="font-mono font-bold text-farm-gold">₹{order.total.toFixed(2)}</p>
                     </div>
                     <div className="flex items-center gap-2 px-4 py-2 bg-black/30 rounded-full border border-farm-cream/10">
@@ -352,7 +354,7 @@ export default function CustomerDashboard() {
                           <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg bg-farm-cream/10" />
                           <div className="flex-1">
                             <h4 className="font-medium">{item.name}</h4>
-                            <p className="text-farm-cream/60 text-sm">Qty: {item.quantity}</p>
+                            <p className="text-farm-cream/60 text-sm">{t('customerDashboard.qty')}: {item.quantity}</p>
                           </div>
                           <span className="font-mono text-farm-cream/80">₹{(item.price * item.quantity).toFixed(2)}</span>
                         </div>
@@ -382,7 +384,7 @@ export default function CustomerDashboard() {
             
             {/* Tooltip */}
             <span className="absolute -top-10 right-0 bg-black/80 text-farm-cream text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap backdrop-blur-sm">
-              Need Help? Chat with us
+              {t('customerDashboard.support.title')}
             </span>
           </button>
         ) : (
@@ -390,7 +392,7 @@ export default function CustomerDashboard() {
             <div className="p-4 bg-farm-cream/10 flex items-center justify-between border-b border-farm-cream/10">
               <div className="flex items-center gap-2 text-farm-gold">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <h3 className="font-bold">FarmVerse Support</h3>
+                <h3 className="font-bold">{t('customerDashboard.support.header')}</h3>
               </div>
               <button 
                 onClick={() => setIsChatOpen(false)}
@@ -403,8 +405,8 @@ export default function CustomerDashboard() {
             <div className="flex-1 p-4 overflow-y-auto custom-scrollbar flex flex-col gap-3 bg-black/40">
               {messages.length === 0 ? (
                 <div className="text-center text-farm-cream/50 mt-10 text-sm">
-                  <p>Welcome to Support!</p>
-                  <p className="mt-1">How can we help with your order?</p>
+                  <p>{t('customerDashboard.support.welcome')}</p>
+                  <p className="mt-1">{t('customerDashboard.support.welcomeDesc')}</p>
                 </div>
               ) : (
                 messages.map((msg: ChatMessage) => (
@@ -438,7 +440,7 @@ export default function CustomerDashboard() {
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={t('customerDashboard.support.placeholder')}
                 className="flex-1 bg-black/50 border border-farm-cream/20 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-farm-gold transition-colors"
               />
               <button 

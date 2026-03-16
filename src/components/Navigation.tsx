@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ShoppingCart, Menu, X, Search, User as UserIcon } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User as UserIcon, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { useStore } from '../store/useStore';
 
@@ -17,11 +18,17 @@ const navLinks = [
 ];
 
 export default function Navigation({ onNavigate }: NavigationProps) {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { cart, toggleCart, searchQuery, setSearchQuery, user, userRole } = useStore();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language.startsWith('en') ? 'hi' : 'en';
+    i18n.changeLanguage(newLang);
+  };
 
 
 
@@ -68,19 +75,18 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigation(link.href);
-                  }}
-                  className="group relative px-4 py-2 rounded-full text-sm font-medium text-farm-cream/80 transition-all duration-300 hover:text-farm-gold hover:bg-farm-gold/10 hover:shadow-[0_0_20px_rgba(212,160,58,0.2)]"
-                >
-                  {link.label}
-                </a>
-              ))}
+              <a href="#marketplace" onClick={(e) => { e.preventDefault(); handleNavigation('#marketplace'); }} className="group relative px-4 py-2 rounded-full text-sm font-medium text-farm-cream/80 transition-all duration-300 hover:text-farm-gold hover:bg-farm-gold/10 hover:shadow-[0_0_20px_rgba(212,160,58,0.2)]">
+                {t('nav.marketplace')}
+              </a>
+              <a href="#smart" onClick={(e) => { e.preventDefault(); handleNavigation('#smart'); }} className="group relative px-4 py-2 rounded-full text-sm font-medium text-farm-cream/80 transition-all duration-300 hover:text-farm-gold hover:bg-farm-gold/10 hover:shadow-[0_0_20px_rgba(212,160,58,0.2)]">
+                {t('nav.technology')}
+              </a>
+              <a href="#sustainable" onClick={(e) => { e.preventDefault(); handleNavigation('#sustainable'); }} className="group relative px-4 py-2 rounded-full text-sm font-medium text-farm-cream/80 transition-all duration-300 hover:text-farm-gold hover:bg-farm-gold/10 hover:shadow-[0_0_20px_rgba(212,160,58,0.2)]">
+                {t('nav.sustainability')}
+              </a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavigation('#contact'); }} className="group relative px-4 py-2 rounded-full text-sm font-medium text-farm-cream/80 transition-all duration-300 hover:text-farm-gold hover:bg-farm-gold/10 hover:shadow-[0_0_20px_rgba(212,160,58,0.2)]">
+                {t('nav.contact')}
+              </a>
             </div>
 
             {/* Search Bar */}
@@ -88,7 +94,7 @@ export default function Navigation({ onNavigate }: NavigationProps) {
               <div className="relative w-full max-w-md group">
                 <input
                   type="text"
-                  placeholder="Search fresh produce..."
+                  placeholder={t('nav.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => {
@@ -111,6 +117,17 @@ export default function Navigation({ onNavigate }: NavigationProps) {
 
             {/* Actions */}
             <div className="flex items-center gap-4">
+              
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-farm-cream/20 text-farm-cream/80 hover:text-farm-gold hover:border-farm-gold/50 transition-colors duration-300 text-xs font-bold uppercase tracking-wider bg-farm-cream/5"
+                title="Toggle Language (English/Hindi)"
+              >
+                <Globe className="w-4 h-4" />
+                <span>{i18n.language.startsWith('en') ? 'EN' : 'HI'}</span>
+              </button>
+
               {/* Account button */}
               <button
                 onClick={() => {

@@ -1,12 +1,14 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ArrowRight, Users, Heart, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MovementSectionProps {
   onMeetFarmersClick: () => void;
 }
 
 export default function MovementSection({ onMeetFarmersClick }: MovementSectionProps) {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -184,16 +186,15 @@ export default function MovementSection({ onMeetFarmersClick }: MovementSectionP
           ref={headlineRef}
           className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-farm-cream leading-[0.95] mb-6"
         >
-          <span className="word inline-block">Join</span>{' '}
-          <span className="word inline-block">the</span>{' '}
-          <span className="word inline-block text-gradient-gold">Movement.</span>
+          <span className="word inline-block">{t('movement.titlePart1')}</span>{' '}
+          <span className="word inline-block text-gradient-gold">{t('movement.titlePart2')}</span>
         </h2>
 
         <p
           ref={bodyRef}
           className="text-lg md:text-xl text-farm-cream/80 mb-6 max-w-md"
         >
-          Support local farmers. Build healthier communities. Taste the difference.
+          {t('movement.subtitle')}
         </p>
 
         {/* Stats */}
@@ -216,7 +217,7 @@ export default function MovementSection({ onMeetFarmersClick }: MovementSectionP
           onClick={onMeetFarmersClick}
           className="btn-primary group flex items-center gap-3"
         >
-          Meet Our Farmers
+          {t('movement.meetFarmers')}
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>

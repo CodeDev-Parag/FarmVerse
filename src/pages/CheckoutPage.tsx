@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Phone, User, CheckCircle2, ChevronRight, Truck, Banknote, CreditCard, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 
 export default function CheckoutPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { cart, getCartTotal, clearCart, user } = useStore();
   const [loading, setLoading] = useState(false);
@@ -58,8 +60,8 @@ export default function CheckoutPage() {
   if (cart.length === 0 && !success) {
     return (
       <div className="min-h-screen bg-farm-green text-farm-cream flex flex-col items-center justify-center p-6">
-        <h2 className="text-2xl font-heading font-bold mb-4">Your Cart is Empty</h2>
-        <button onClick={() => navigate('/')} className="btn-primary">Return to Shop</button>
+        <h2 className="text-2xl font-heading font-bold mb-4">{t('cart.empty')}</h2>
+        <button onClick={() => navigate('/')} className="btn-primary">{t('cart.startShopping')}</button>
       </div>
     );
   }
@@ -72,9 +74,9 @@ export default function CheckoutPage() {
           <div className="w-20 h-20 bg-farm-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-farm-gold" />
           </div>
-          <h2 className="text-3xl font-heading font-bold mb-2">Order Placed!</h2>
-          <p className="text-farm-cream/70 mb-8">Thank you for supporting local farmers. Your fresh produce is on its way!</p>
-          <button onClick={() => navigate('/')} className="btn-primary w-full">Continue Shopping</button>
+          <h2 className="text-3xl font-heading font-bold mb-2">{t('checkout.successTitle')}</h2>
+          <p className="text-farm-cream/70 mb-8">{t('checkout.successDesc')}</p>
+          <button onClick={() => navigate('/')} className="btn-primary w-full">{t('checkout.continueShopping')}</button>
         </div>
       </div>
     );
@@ -111,20 +113,20 @@ export default function CheckoutPage() {
                 <div className="w-10 h-10 rounded-full bg-farm-cream/10 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-farm-gold" />
                 </div>
-                <h2 className="text-2xl font-heading font-bold">Shipping Details</h2>
+                <h2 className="text-2xl font-heading font-bold">{t('checkout.shipping.title')}</h2>
               </div>
               
               <form id="checkout-form" onSubmit={handlePlaceOrder} className="glass-panel p-6 sm:p-8 space-y-5 border border-farm-cream/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm text-farm-cream/70 mb-2">Full Name</label>
+                    <label className="block text-sm text-farm-cream/70 mb-2">{t('checkout.shipping.fullName')}</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-farm-cream/40" />
                       <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="John Doe" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm text-farm-cream/70 mb-2">Phone Number</label>
+                    <label className="block text-sm text-farm-cream/70 mb-2">{t('checkout.shipping.phone')}</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-farm-cream/40" />
                       <input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="+91 98765 43210" />
@@ -133,17 +135,17 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-farm-cream/70 mb-2">Street Address</label>
+                  <label className="block text-sm text-farm-cream/70 mb-2">{t('checkout.shipping.address')}</label>
                   <input type="text" required value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="123 Farm Lane, Village Road" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm text-farm-cream/70 mb-2">City</label>
+                    <label className="block text-sm text-farm-cream/70 mb-2">{t('checkout.shipping.city')}</label>
                     <input type="text" required value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="Mumbai" />
                   </div>
                   <div>
-                    <label className="block text-sm text-farm-cream/70 mb-2">PIN Code</label>
+                    <label className="block text-sm text-farm-cream/70 mb-2">{t('checkout.shipping.zip')}</label>
                     <input type="text" required value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} className="w-full px-4 py-3 bg-farm-cream/5 border border-farm-cream/20 rounded-xl focus:outline-none focus:border-farm-gold transition-colors" placeholder="400001" />
                   </div>
                 </div>
@@ -188,7 +190,7 @@ export default function CheckoutPage() {
           {/* Right Column: Order Summary */}
           <div className="w-full lg:w-[400px]">
             <div className="glass-panel p-6 sticky top-28 border border-farm-cream/10">
-              <h3 className="text-xl font-heading font-bold border-b border-farm-cream/10 pb-4 mb-4">Order Summary</h3>
+              <h3 className="text-xl font-heading font-bold border-b border-farm-cream/10 pb-4 mb-4">{t('checkout.orderSummary')}</h3>
               
               <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                 {cart.map((item) => (
@@ -215,7 +217,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-farm-gold/30 mb-8">
-                <span className="font-bold text-lg">Total</span>
+                <span className="font-bold text-lg">{t('checkout.total')}</span>
                 <span className="font-mono font-bold text-2xl text-farm-gold">₹{finalTotal.toFixed(2)}</span>
               </div>
 
@@ -225,7 +227,7 @@ export default function CheckoutPage() {
                 disabled={loading}
                 className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-lg shadow-[0_0_20px_rgba(212,160,58,0.3)]"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : `Place Order (₹${finalTotal.toFixed(2)})`}
+                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : `${t('checkout.placeOrder')} (₹${finalTotal.toFixed(2)})`}
               </button>
             </div>
           </div>

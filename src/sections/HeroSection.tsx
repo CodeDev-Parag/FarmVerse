@@ -1,12 +1,14 @@
 import { useEffect, useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface HeroSectionProps {
   onExploreClick: () => void;
 }
 
 export default function HeroSection({ onExploreClick }: HeroSectionProps) {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -228,8 +230,8 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
           ref={headlineRef}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black text-farm-cream leading-[0.95] mb-6"
         >
-          <span className="word inline-block">Empowering</span>{' '}
-          <span className="word inline-block text-gradient-gold">Farmers.</span>
+          <span className="word inline-block">{t('hero.titlePart1')}</span>{' '}
+          <span className="word inline-block text-gradient-gold">{t('hero.titlePart2')}</span>
         </h1>
 
         {/* Subheadline */}
@@ -237,7 +239,7 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
           ref={subheadlineRef}
           className="text-lg md:text-xl text-farm-cream/80 mb-8 max-w-md"
         >
-          Sell directly. Earn fairly. Grow sustainably.
+          {t('hero.subtitle')}
         </p>
 
         {/* CTA Button */}
@@ -246,7 +248,7 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
           onClick={onExploreClick}
           className="btn-primary group flex items-center gap-3"
         >
-          Explore the Marketplace
+          {t('hero.exploreMarket')}
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>
@@ -257,7 +259,7 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
         className="absolute z-[4] font-mono text-xs tracking-[0.2em] text-farm-cream/60 uppercase"
         style={{ left: '7vw', bottom: '7vh' }}
       >
-        Marketplace
+        {t('nav.marketplace')}
       </span>
 
       {/* Bottom Right Tag */}
@@ -266,7 +268,7 @@ export default function HeroSection({ onExploreClick }: HeroSectionProps) {
         className="absolute z-[4] font-mono text-xs tracking-[0.2em] text-farm-cream/60 uppercase"
         style={{ right: '7vw', bottom: '7vh' }}
       >
-        Sustainability
+        {t('nav.sustainability')}
       </span>
 
       {/* Scroll Indicator */}

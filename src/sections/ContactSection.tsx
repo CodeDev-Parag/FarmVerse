@@ -2,10 +2,10 @@ import { useRef, useLayoutEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { Mail, Phone, MapPin, Send, Loader2, Check, Instagram, Twitter, Linkedin } from 'lucide-react';
-
-
+import { useTranslation } from 'react-i18next';
 
 export default function ContactSection() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
@@ -96,9 +96,9 @@ export default function ContactSection() {
   };
 
   const contactInfo = [
-    { icon: Mail, label: 'Email', value: 'hello@farmverse.io' },
-    { icon: Phone, label: 'Phone', value: '+91 98765 43210' },
-    { icon: MapPin, label: 'Location', value: 'Pune, Maharashtra, India' },
+    { icon: Mail, label: t('contact.details.email'), value: 'hello@farmverse.io' },
+    { icon: Phone, label: t('contact.details.phone'), value: '+91 98765 43210' },
+    { icon: MapPin, label: t('contact.details.location'), value: 'Pune, Maharashtra, India' },
   ];
 
   const socialLinks = [
@@ -132,10 +132,10 @@ export default function ContactSection() {
           {/* Left Panel - Contact Info */}
           <div ref={leftPanelRef} className="glass-panel p-8 md:p-10">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black text-farm-cream mb-4">
-              Get in <span className="text-gradient-gold">Touch.</span>
+              {t('contact.titlePart1')} <span className="text-gradient-gold">{t('contact.titlePart2')}</span>
             </h2>
             <p className="text-farm-cream/70 mb-8">
-              Have questions? Want to partner? We're here to help. Reach out and let's grow together.
+              {t('contact.subtitle')}
             </p>
 
             {/* Contact Details */}
@@ -156,16 +156,16 @@ export default function ContactSection() {
             {/* Farmer CTA */}
             <div className="p-5 bg-farm-gold/10 border border-farm-gold/20 rounded-xl max-w-sm">
               <h3 className="text-base font-semibold text-farm-cream mb-1">
-                Are you a farmer?
+                {t('contact.farmerCta.title')}
               </h3>
               <p className="text-sm text-farm-cream/70 mb-3">
-                Join our marketplace and sell directly to customers.
+                {t('contact.farmerCta.desc')}
               </p>
               <button
                 onClick={() => navigate('/auth?type=signup&role=farmer')}
                 className="text-farm-gold text-sm font-medium hover:underline"
               >
-                Apply to sell →
+                {t('contact.farmerCta.link')}
               </button>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function ContactSection() {
           {/* Right Panel - Contact Form */}
           <div ref={rightPanelRef} className="glass-panel p-8 md:p-10">
             <h3 className="text-2xl font-heading font-bold text-farm-cream mb-6">
-              Send us a message
+              {t('contact.form.title')}
             </h3>
 
             {isSubmitted ? (
@@ -182,17 +182,17 @@ export default function ContactSection() {
                   <Check className="w-8 h-8 text-green-500" />
                 </div>
                 <h4 className="text-xl font-semibold text-farm-cream mb-2">
-                  Message Sent!
+                  {t('contact.form.successTitle')}
                 </h4>
                 <p className="text-farm-cream/60">
-                  We'll get back to you soon.
+                  {t('contact.form.successDesc')}
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm text-farm-cream/80 mb-2">
-                    Your Name
+                    {t('contact.form.name')}
                   </label>
                   <input
                     type="text"
@@ -207,7 +207,7 @@ export default function ContactSection() {
 
                 <div>
                   <label className="block text-sm text-farm-cream/80 mb-2">
-                    Email Address
+                    {t('contact.form.email')}
                   </label>
                   <input
                     type="email"
@@ -222,7 +222,7 @@ export default function ContactSection() {
 
                 <div>
                   <label className="block text-sm text-farm-cream/80 mb-2">
-                    Message
+                    {t('contact.form.message')}
                   </label>
                   <textarea
                     name="message"
@@ -243,12 +243,12 @@ export default function ContactSection() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Sending...
+                      {t('contact.form.submitting')}
                     </>
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Send Message
+                      {t('contact.form.submit')}
                     </>
                   )}
                 </button>
@@ -271,16 +271,16 @@ export default function ContactSection() {
             {/* Links */}
             <div className="flex flex-wrap items-center justify-center gap-6">
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
-                Privacy
+                {t('contact.footer.privacy')}
               </a>
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
-                Terms
+                {t('contact.footer.terms')}
               </a>
               <a href="https://enam.gov.in/web/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-farm-gold hover:text-farm-cream transition-colors">
-                Government e-NAM
+                {t('contact.footer.enam')}
               </a>
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
-                Careers
+                {t('contact.footer.careers')}
               </a>
             </div>
 
@@ -301,10 +301,9 @@ export default function ContactSection() {
 
           <div className="mt-8 pt-6 border-t border-farm-cream/5 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-center text-farm-cream/40 text-sm">
-              © 2026 FarmVerse. Empowering farmers worldwide.
+              {t('contact.footer.copyright')}
             </p>
-            <p className="text-center text-farm-cream/60 text-sm font-medium">
-              Made with <span className="text-red-500 animate-pulse inline-block">❤️</span> by <span className="text-farm-gold font-bold">Parag</span>
+            <p className="text-center text-farm-cream/60 text-sm font-medium" dangerouslySetInnerHTML={{ __html: t('contact.footer.madeWith').replace('❤️', '<span className="text-red-500 animate-pulse inline-block">❤️</span>').replace('Parag', '<span className="text-farm-gold font-bold">Parag</span>') }}>
             </p>
           </div>
         </footer>

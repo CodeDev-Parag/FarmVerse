@@ -2,9 +2,11 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from '../store/useStore';
 
 export default function CartDrawer() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isCartOpen, toggleCart, cart, removeFromCart, updateQuantity, getCartTotal } = useStore();
   const isOpen = isCartOpen;
@@ -76,7 +78,7 @@ export default function CartDrawer() {
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-6 h-6 text-farm-gold" />
             <h2 className="text-xl font-heading font-bold text-farm-cream">
-              Your Cart
+              {t('cart.title')}
             </h2>
           </div>
           <button
@@ -93,9 +95,9 @@ export default function CartDrawer() {
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <ShoppingBag className="w-16 h-16 text-farm-cream/20 mb-4" />
-              <p className="text-farm-cream/60 text-lg">Your cart is empty</p>
+              <p className="text-farm-cream/60 text-lg">{t('cart.empty')}</p>
               <p className="text-farm-cream/40 text-sm mt-2">
-                Add some fresh produce to get started
+                {t('cart.emptyDesc')}
               </p>
             </div>
           ) : (
@@ -150,7 +152,7 @@ export default function CartDrawer() {
         {cart.length > 0 && (
           <div className="p-6 border-t border-farm-cream/10 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-farm-cream/60">Subtotal</span>
+              <span className="text-farm-cream/60">{t('cart.total')}</span>
               <span className="text-farm-cream font-mono text-lg">
                 ₹{total.toFixed(2)}
               </span>
@@ -162,11 +164,8 @@ export default function CartDrawer() {
               }}
               className="w-full btn-primary"
             >
-              Proceed to Checkout
+              {t('cart.checkout')}
             </button>
-            <p className="text-center text-farm-cream/40 text-xs">
-              Shipping calculated at checkout
-            </p>
           </div>
         )}
       </div>

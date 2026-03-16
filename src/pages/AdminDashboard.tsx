@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, ArrowLeft, Package, MessageSquare, Send, UserCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 import type { OrderStatus, ChatMessage, Order } from '../store/useStore';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -211,14 +213,14 @@ export default function AdminDashboard() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'orders' ? 'bg-farm-cream/10 text-farm-cream' : 'text-farm-cream/60 hover:text-farm-cream hover:bg-farm-cream/5'}`}
           >
             <Package className="w-5 h-5" />
-            <span className="font-medium">All Orders</span>
+            <span className="font-medium">{t('adminDashboard.tabs.orders')}</span>
           </button>
           <button 
             onClick={() => setActiveTab('support')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'support' ? 'bg-farm-cream/10 text-farm-cream' : 'text-farm-cream/60 hover:text-farm-cream hover:bg-farm-cream/5'}`}
           >
             <MessageSquare className="w-5 h-5" />
-            <span className="font-medium">Support Hub</span>
+            <span className="font-medium">{t('adminDashboard.tabs.support')}</span>
           </button>
         </nav>
 
@@ -229,12 +231,12 @@ export default function AdminDashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">Mediator Admin</p>
-              <p className="text-xs text-farm-cream/50">System Control</p>
+              <p className="text-xs text-farm-cream/50">{t('adminDashboard.sidebar.account')}</p>
             </div>
           </div>
           <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
             <LogOut className="w-5 h-5" />
-            <span className="font-medium">Sign Out</span>
+            <span className="font-medium">{t('adminDashboard.sidebar.signOut')}</span>
           </button>
         </div>
       </aside>
@@ -247,8 +249,8 @@ export default function AdminDashboard() {
           {activeTab === 'orders' && (
             <div className="h-full flex flex-col">
               <div className="mb-8">
-                <h1 className="text-3xl font-heading font-bold mb-2">Global Command Center</h1>
-                <p className="text-farm-cream/60">Mediate orders between customers and local farmers.</p>
+                <h1 className="text-3xl font-heading font-bold mb-2">{t('adminDashboard.title')}</h1>
+                <p className="text-farm-cream/60">{t('adminDashboard.subtitle')}</p>
               </div>
 
               <div className="flex-1 overflow-auto pr-2 custom-scrollbar">
@@ -256,8 +258,8 @@ export default function AdminDashboard() {
                   {orders.map(order => (
                     <div key={order.id} className="glass-panel border border-farm-cream/10 p-6 flex flex-wrap items-center justify-between gap-6">
                       <div className="flex-1 min-w-[200px]">
-                        <p className="text-sm text-farm-cream/60 mb-1">Order {order.short_id || order.id.substring(0,8)}</p>
-                        <h4 className="font-medium">{order.shipping_details?.name || 'Customer'}</h4>
+                        <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.orderNumber')} {order.short_id || order.id.substring(0,8)}</p>
+                        <h4 className="font-medium">{order.shipping_details?.name || t('adminDashboard.supportChat.customer')}</h4>
                         <p className="text-sm text-farm-cream/60">{order.items.length} items • ₹{order.total.toFixed(2)}</p>
                       </div>
                       
@@ -271,17 +273,17 @@ export default function AdminDashboard() {
                           onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
                           className="bg-black/50 border border-farm-cream/20 text-farm-cream text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-farm-gold"
                         >
-                          <option value="pending">Pending Vendor</option>
-                          <option value="processing">Processing</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
+                          <option value="pending">{t('customerDashboard.status.pending')}</option>
+                          <option value="processing">{t('customerDashboard.status.processing')}</option>
+                          <option value="shipped">{t('customerDashboard.status.shipped')}</option>
+                          <option value="delivered">{t('customerDashboard.status.delivered')}</option>
                         </select>
                       </div>
                     </div>
                   ))}
                   {orders.length === 0 && (
                      <div className="text-center p-12 glass-panel border border-farm-cream/10 text-farm-cream/50">
-                       No orders in the system yet.
+                       {t('farmerDashboard.ordersList.noOrders')}
                      </div>
                   )}
                 </div>
@@ -294,9 +296,8 @@ export default function AdminDashboard() {
               <div className="p-6 border-b border-farm-cream/10 bg-farm-cream/5">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <UserCircle className="w-6 h-6 text-farm-gold" />
-                  Global Support Chat
+                  {t('adminDashboard.supportChat.title')}
                 </h2>
-                <p className="text-sm text-farm-cream/60">Manage customer queries and support tickets.</p>
               </div>
 
               <div className="flex-1 overflow-hidden flex">
@@ -314,7 +315,7 @@ export default function AdminDashboard() {
                           className={`w-full text-left p-4 border-b border-farm-cream/5 transition-colors flex items-center justify-between ${selectedRoomId === roomId ? 'bg-farm-cream/10' : 'hover:bg-farm-cream/5'}`}
                         >
                           <div className="truncate">
-                            <p className="text-sm font-medium text-farm-gold truncate">Customer</p>
+                            <p className="text-sm font-medium text-farm-gold truncate">{t('adminDashboard.supportChat.customer')}</p>
                             <p className="text-xs text-farm-cream/50 font-mono truncate">{roomId.substring(0, 8)}...</p>
                           </div>
                           {unreadCount > 0 && (
@@ -332,7 +333,7 @@ export default function AdminDashboard() {
                 {!selectedRoomId ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-farm-cream/40 bg-black/40">
                     <MessageSquare className="w-12 h-12 mb-4 opacity-50" />
-                    <p>Select a customer chat to start messaging.</p>
+                    <p>{t('adminDashboard.supportChat.selectCustomer')}</p>
                   </div>
                 ) : (
                   <div className="flex-1 flex flex-col bg-black/40 relative">
@@ -340,7 +341,7 @@ export default function AdminDashboard() {
                       {messages.filter(m => m.roomId === selectedRoomId).map((msg: ChatMessage) => (
                         <div key={msg.id} className={`flex w-full ${msg.senderRole === 'admin' ? 'justify-end' : 'justify-start'}`}>
                           <div className={`relative px-5 pt-4 pb-9 rounded-2xl text-sm max-w-[85%] min-w-[120px] shadow-sm ${msg.senderRole === 'admin' ? 'bg-farm-gold text-farm-green rounded-tr-sm' : 'glass-panel border border-farm-cream/20 rounded-tl-sm'}`}>
-                            {msg.senderRole === 'customer' && <p className="text-xs text-farm-gold mb-1.5 font-bold">Customer</p>}
+                            {msg.senderRole === 'customer' && <p className="text-xs text-farm-gold mb-1.5 font-bold">{t('adminDashboard.supportChat.customer')}</p>}
                             <p className="break-words leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                             <div className="absolute bottom-2 right-3 flex items-center gap-1.5">
                               <span className="text-[10px] opacity-60 font-medium">
@@ -364,7 +365,7 @@ export default function AdminDashboard() {
                           type="text" 
                           value={chatInput}
                           onChange={(e) => setChatInput(e.target.value)}
-                          placeholder="Type a message to the customer..."
+                          placeholder="Type your message..."
                           className="flex-1 bg-black/50 border border-farm-cream/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-farm-gold transition-colors pr-12"
                         />
                         <button 

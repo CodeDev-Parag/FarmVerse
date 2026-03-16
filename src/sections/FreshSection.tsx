@@ -1,8 +1,10 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function FreshSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -167,17 +169,15 @@ export default function FreshSection() {
           ref={headlineRef}
           className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-farm-cream leading-[0.95] mb-6"
         >
-          <span className="word inline-block">Fresh</span>{' '}
-          <span className="word inline-block">from</span>{' '}
-          <span className="word inline-block">the</span>{' '}
-          <span className="word inline-block text-gradient-gold">Farm.</span>
+          <span className="word inline-block">{t('fresh.titlePart1')}</span>{' '}
+          <span className="word inline-block text-gradient-gold">{t('fresh.titlePart2')}</span>
         </h2>
 
         <p
           ref={bodyRef}
           className="text-lg md:text-xl text-farm-cream/80 mb-8 max-w-md"
         >
-          Hand-picked, locally grown produce delivered straight to your door.
+          {t('fresh.subtitle')}
         </p>
 
         <button
@@ -185,7 +185,7 @@ export default function FreshSection() {
           onClick={scrollToMarketplace}
           className="btn-primary group flex items-center gap-3"
         >
-          Shop Seasonal Produce
+          {t('nav.marketplace')}
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>

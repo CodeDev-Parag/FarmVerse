@@ -1,8 +1,10 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ArrowRight, Leaf, Recycle, Sun } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function SustainableSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -123,9 +125,9 @@ export default function SustainableSection() {
   }, []);
 
   const features = [
-    { icon: Leaf, label: 'Organic Practices' },
-    { icon: Recycle, label: 'Zero Waste' },
-    { icon: Sun, label: 'Renewable Energy' },
+    { icon: Leaf, label: t('sustainable.features.organic') },
+    { icon: Recycle, label: t('sustainable.features.zeroWaste') },
+    { icon: Sun, label: t('sustainable.features.renewable') },
   ];
 
   return (
@@ -179,15 +181,15 @@ export default function SustainableSection() {
           ref={headlineRef}
           className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-farm-cream leading-[0.95] mb-6"
         >
-          <span className="word inline-block">Sustainable</span>{' '}
-          <span className="word inline-block text-gradient-gold">Farming.</span>
+          <span className="word inline-block">{t('sustainable.titlePart1')}</span>{' '}
+          <span className="word inline-block text-gradient-gold">{t('sustainable.titlePart2')}</span>
         </h2>
 
         <p
           ref={bodyRef}
           className="text-lg md:text-xl text-farm-cream/80 mb-6 max-w-md"
         >
-          Eco-friendly practices that protect the land and secure the future of food.
+          {t('sustainable.subtitle')}
         </p>
 
         {/* Features */}
@@ -208,7 +210,7 @@ export default function SustainableSection() {
           onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })}
           className="btn-primary group flex items-center gap-3"
         >
-          Learn Our Practices
+          {t('sustainable.cta')}
           <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>
@@ -219,7 +221,7 @@ export default function SustainableSection() {
         className="absolute z-[4] font-mono text-xs tracking-[0.2em] text-farm-cream/60 uppercase"
         style={{ left: '7vw', bottom: '7vh', opacity: 0 }}
       >
-        Eco-Friendly
+        {t('sustainable.tags.eco')}
       </span>
 
       {/* Bottom Right Tag */}
@@ -228,7 +230,7 @@ export default function SustainableSection() {
         className="absolute z-[4] font-mono text-xs tracking-[0.2em] text-farm-cream/60 uppercase"
         style={{ right: '7vw', bottom: '7vh', opacity: 0 }}
       >
-        Future
+        {t('sustainable.tags.future')}
       </span>
     </section>
   );

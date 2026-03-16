@@ -1,6 +1,7 @@
 import { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const testimonials = [
   {
@@ -30,6 +31,7 @@ const testimonials = [
 ];
 
 export default function StoriesSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -112,10 +114,10 @@ export default function StoriesSection() {
         {/* Heading */}
         <div ref={headingRef} className="mb-12">
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-farm-cream mb-4">
-            Farmer <span className="text-gradient-gold">Stories.</span>
+            {t('stories.titlePart1')} <span className="text-gradient-gold">{t('stories.titlePart2')}</span>
           </h2>
           <p className="text-lg text-farm-cream/70 max-w-xl">
-            Real stories from real farmers whose lives have been transformed by direct trade.
+            {t('stories.subtitle')}
           </p>
         </div>
 
@@ -129,7 +131,7 @@ export default function StoriesSection() {
               <Quote className="w-10 h-10 text-farm-gold/30 mb-4" />
 
               <p className="text-farm-cream/90 text-lg leading-relaxed mb-6">
-                "{testimonial.quote}"
+                "{t(`stories.card${testimonial.id}.quote`)}"
               </p>
 
               <div className="flex items-center gap-4">
@@ -139,8 +141,8 @@ export default function StoriesSection() {
                   className="w-14 h-14 rounded-full object-cover border-2 border-farm-gold/30"
                 />
                 <div>
-                  <h4 className="font-semibold text-farm-cream">{testimonial.name}</h4>
-                  <p className="text-sm text-farm-cream/60">{testimonial.role}, {testimonial.location}</p>
+                  <h4 className="font-semibold text-farm-cream">{t(`stories.card${testimonial.id}.author`)}</h4>
+                  <p className="text-sm text-farm-cream/60">{t(`stories.card${testimonial.id}.role`)}, {testimonial.location}</p>
                 </div>
               </div>
             </div>
@@ -163,7 +165,7 @@ export default function StoriesSection() {
                     <Quote className="w-8 h-8 text-farm-gold/30 mb-4" />
 
                     <p className="text-farm-cream/90 text-base leading-relaxed mb-6">
-                      "{testimonial.quote}"
+                      "{t(`stories.card${testimonial.id}.quote`)}"
                     </p>
 
                     <div className="flex items-center gap-4">
@@ -173,8 +175,8 @@ export default function StoriesSection() {
                         className="w-12 h-12 rounded-full object-cover border-2 border-farm-gold/30"
                       />
                       <div>
-                        <h4 className="font-semibold text-farm-cream">{testimonial.name}</h4>
-                        <p className="text-sm text-farm-cream/60">{testimonial.role}, {testimonial.location}</p>
+                        <h4 className="font-semibold text-farm-cream">{t(`stories.card${testimonial.id}.author`)}</h4>
+                        <p className="text-sm text-farm-cream/60">{t(`stories.card${testimonial.id}.role`)}, {testimonial.location}</p>
                       </div>
                     </div>
                   </div>
