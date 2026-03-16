@@ -9,13 +9,14 @@ const FarmerDashboard = lazy(() => import('./pages/FarmerDashboard'));
 const CustomerDashboard = lazy(() => import('./pages/CustomerDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
 
 import { useStore } from './store/useStore';
 import { supabase } from './lib/supabase';
 import type { Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 function App() {
-  const { setUser, setIsAuthInitialized, setUserRole, fetchProducts } = useStore();
+  const { setUser, setIsAuthInitialized, setUserRole, fetchProducts, fetchSystemSettings, isMaintenanceMode, userRole } = useStore();
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -40,6 +41,7 @@ function App() {
       }
       setIsAuthInitialized(true);
       fetchProducts();
+      fetchSystemSettings();
     });
 
     // Listen for changes on auth state (log in, log out, etc.)
@@ -76,26 +78,30 @@ function App() {
           <div className="w-12 h-12 border-4 border-farm-gold/30 border-t-farm-gold rounded-full animate-spin"></div>
         </div>
       }>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          
-          {/* Protected Customer Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/account" element={<CustomerDashboard />} />
-          </Route>
+        {isMaintenanceMode && userRole !== 'admin' ? (
+          <MaintenancePage />
+        ) : (
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            
+            {/* Protected Customer Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/account" element={<CustomerDashboard />} />
+            </Route>
 
-          {/* Protected Farmer Routes */}
-          <Route element={<ProtectedRoute requiredRole="farmer" />}>
-            <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
-          </Route>
+            {/* Protected Farmer Routes */}
+            <Route element={<ProtectedRoute requiredRole="farmer" />}>
+              <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
+            </Route>
 
-          {/* Protected Admin Routes */}
-          <Route element={<ProtectedRoute requiredRole="admin" />}>
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          </Route>
-        </Routes>
+            {/* Protected Admin Routes */}
+            <Route element={<ProtectedRoute requiredRole="admin" />}>
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            </Route>
+          </Routes>
+        )}
       </Suspense>
     </Router>
   );

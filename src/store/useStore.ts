@@ -91,6 +91,11 @@ interface StoreState {
     setProducts: (products: Product[]) => void;
     fetchProducts: () => Promise<void>;
 
+    // System Settings Slice
+    isMaintenanceMode: boolean;
+    setIsMaintenanceMode: (isMaintenance: boolean) => void;
+    fetchSystemSettings: () => Promise<void>;
+
     // Orders Slice is removed - Orders are now fetched directly from Supabase
 }
 
@@ -162,6 +167,25 @@ export const useStore = create<StoreState>()(
         if (data) {
             set({ products: data });
         }
+    },
+
+    // System Settings
+    isMaintenanceMode: false,
+    setIsMaintenanceMode: (isMaintenance) => set({ isMaintenanceMode: isMaintenance }),
+    fetchSystemSettings: async () => {
+        const { data, error } = await supabase.from('system_settings').select('value').eq('key', 'maintenance_mode').single();
+        if (!error && data) {
+            set({ isMaintenanceMode: data.value === 'true' || data.value === true });
+        }
+        
+        // Listen to changes on system_settings globally
+        supabase.channel('global_system_settings')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'system_settings' }, (payload: any) => {
+                if (payload.new && payload.new.key === 'maintenance_mode') {
+                    set({ isMaintenanceMode: payload.new.value === 'true' || payload.new.value === true });
+                }
+            })
+            .subscribe();
     },
 
     // Orders slice removed from Zustand initialization

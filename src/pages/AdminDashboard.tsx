@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, ArrowLeft, Package, MessageSquare, Send, UserCircle } from 'lucide-react';
+import { LogOut, ArrowLeft, Package, MessageSquare, Send, UserCircle, Settings, ShieldAlert, Globe, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
@@ -9,12 +9,13 @@ import type { OrderStatus, ChatMessage, Order } from '../store/useStore';
 export default function AdminDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, setUser } = useStore();
+  const { user, setUser, isMaintenanceMode, setIsMaintenanceMode } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState<'orders' | 'support'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'support' | 'management'>('orders');
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [usersList, setUsersList] = useState<any[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,6 +65,18 @@ export default function AdminDashboard() {
     };
     
     fetchMessages();
+
+    // 2.5 Fetch Users
+    const fetchUsers = async () => {
+      const { data, error } = await supabase.rpc('get_all_users');
+      if (data && !error) {
+        setUsersList(data);
+      } else {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+
+    fetchUsers();
 
     // 3. Subscribe to ALL real-time WebSockets
     const messagesChannel = supabase
@@ -186,6 +199,24 @@ export default function AdminDashboard() {
     setChatInput('');
   };
 
+  const handleToggleMaintenance = async () => {
+    const newValue = !isMaintenanceMode;
+    // Optimistic UI update
+    setIsMaintenanceMode(newValue);
+    
+    // Broadcast mutation to DB
+    const { error } = await supabase
+      .from('system_settings')
+      .update({ value: newValue })
+      .eq('key', 'maintenance_mode');
+      
+    if (error) {
+      console.error('Failed to update maintenance mode:', error);
+      // Revert on error
+      setIsMaintenanceMode(!newValue);
+    }
+  };
+
   // Extract unique chat rooms (customers) from global messages
   const chatRooms = Array.from(new Set(messages.map(m => m.roomId)));
 
@@ -221,6 +252,13 @@ export default function AdminDashboard() {
           >
             <MessageSquare className="w-5 h-5" />
             <span className="font-medium">{t('adminDashboard.tabs.support')}</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('management')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'management' ? 'bg-farm-cream/10 text-farm-cream' : 'text-farm-cream/60 hover:text-farm-cream hover:bg-farm-cream/5'}`}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-medium">{t('adminDashboard.tabs.management')}</span>
           </button>
         </nav>
 
@@ -379,6 +417,113 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'management' && (
+            <div className="h-full flex flex-col space-y-6 overflow-y-auto custom-scrollbar pr-2">
+              <div className="mb-4">
+                <h1 className="text-3xl font-heading font-bold mb-2">{t('adminDashboard.management.title', 'Website Management System')}</h1>
+                <p className="text-farm-cream/60">{t('adminDashboard.management.subtitle', 'Configure global platform settings and monitor users.')}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* System Settings Card */}
+                <div className="glass-panel border border-farm-cream/10 flex flex-col">
+                  <div className="p-6 border-b border-farm-cream/10 bg-farm-cream/5">
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                      <Globe className="w-6 h-6 text-farm-gold" />
+                      {t('adminDashboard.management.globalSettings', 'Global Settings')}
+                    </h2>
+                  </div>
+                  <div className="p-6 space-y-8 flex-1">
+                    
+                    <div className="flex items-center justify-between p-4 bg-black/30 rounded-xl border border-farm-cream/5 hover:border-farm-cream/20 transition-colors">
+                      <div className="flex gap-4 items-start">
+                        <div className={`p-3 rounded-full ${isMaintenanceMode ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}`}>
+                          <ShieldAlert className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg">{t('adminDashboard.management.maintenanceMode', 'Maintenance Mode')}</h3>
+                          <p className="text-sm text-farm-cream/60 mt-1 max-w-[200px]">
+                            {t('adminDashboard.management.maintenanceDesc', 'Prevents non-admins from accessing the website while active.')}
+                          </p>
+                        </div>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" checked={isMaintenanceMode} onChange={handleToggleMaintenance} />
+                        <div className="w-14 h-7 bg-farm-cream/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-farm-cream after:border-farm-cream/30 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-red-500 shadow-inner"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-black/30 rounded-xl border border-farm-cream/5 hover:border-farm-cream/20 transition-colors opacity-50 cursor-not-allowed">
+                      <div className="flex gap-4 items-start">
+                        <div className="p-3 rounded-full bg-blue-500/20 text-blue-400">
+                          <Settings className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg">{t('adminDashboard.management.platformFee', 'Platform Fee')} (%)</h3>
+                          <p className="text-sm text-farm-cream/60 mt-1 max-w-[200px]">
+                            {t('adminDashboard.management.feeDesc', 'Global commission taken per successful transaction.')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="px-4 py-2 bg-black/50 border border-farm-cream/20 rounded-lg text-farm-cream font-mono">
+                        2.5%
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* User Directory Card */}
+                <div className="glass-panel border border-farm-cream/10 flex flex-col">
+                  <div className="p-6 border-b border-farm-cream/10 bg-farm-cream/5 flex items-center justify-between">
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                      <Users className="w-6 h-6 text-farm-gold" />
+                      {t('adminDashboard.management.userDirectory', 'User Directory')}
+                    </h2>
+                    <span className="text-xs bg-farm-cream/10 px-2 py-1 rounded-md">Live Data</span>
+                  </div>
+                  <div className="flex-1 overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left text-sm whitespace-nowrap">
+                      <thead className="bg-black/20 text-farm-cream/60">
+                        <tr>
+                          <th className="px-6 py-4 font-medium">{t('adminDashboard.management.user', 'User')}</th>
+                          <th className="px-6 py-4 font-medium">{t('adminDashboard.management.role', 'Role')}</th>
+                          <th className="px-6 py-4 font-medium">{t('adminDashboard.management.status', 'Status')}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-farm-cream/5">
+                        {usersList.length === 0 ? (
+                            <tr>
+                                <td colSpan={3} className="px-6 py-8 text-center text-farm-cream/50">Fetching users...</td>
+                            </tr>
+                        ) : usersList.map((u) => (
+                          <tr key={u.id} className="hover:bg-farm-cream/5 transition-colors">
+                            <td className="px-6 py-4">
+                              <p className="font-medium text-farm-cream">{u.email}</p>
+                              <p className="text-xs text-farm-cream/40 mt-1">Joined {new Date(u.created_at).toLocaleDateString()}</p>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${u.role === 'farmer' ? 'bg-farm-gold/20 text-farm-gold border-farm-gold/20' : u.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border-purple-500/20' : 'bg-blue-500/20 text-blue-400 border-blue-500/20'}`}>
+                                {u.role ? u.role.toUpperCase() : 'CUSTOMER'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                               <span className={`px-2.5 py-1 rounded-full text-xs font-bold border bg-green-500/20 text-green-400 border-green-500/20`}>
+                                ACTIVE
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
               </div>
             </div>
           )}

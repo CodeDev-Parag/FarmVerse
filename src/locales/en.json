@@ -318,7 +318,8 @@
       "overview": "Overview",
       "users": "Users",
       "orders": "Orders",
-      "support": "Support Chat"
+      "support": "Support Chat",
+      "management": "Site Management"
     },
     "usersList": {
       "title": "User Management",
@@ -339,6 +340,24 @@
       "console": "Console",
       "account": "System Administrator",
       "signOut": "Sign Out"
+    },
+    "management": {
+      "title": "Website Management System",
+      "subtitle": "Configure global platform settings and monitor users.",
+      "globalSettings": "Global Settings",
+      "maintenanceMode": "Maintenance Mode",
+      "maintenanceDesc": "Prevents non-admins from accessing the website while active.",
+      "platformFee": "Platform Fee",
+      "feeDesc": "Global commission taken per successful transaction.",
+      "userDirectory": "User Directory",
+      "user": "User",
+      "role": "Role",
+      "status": "Status"
     }
+  },
+  "maintenance": {
+    "title": "Under Maintenance",
+    "description": "We are currently performing scheduled maintenance to improve the FarmVerse platform. We will be back shortly cultivating fresh updates for you.",
+    "status": "System Offline"
   }
 }
