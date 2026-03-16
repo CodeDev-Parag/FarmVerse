@@ -248,6 +248,38 @@ export default function CustomerDashboard() {
             </div>
           </div>
 
+          {/* Live Mandi Ticker */}
+          <div className="mb-10 w-full overflow-hidden glass-panel border border-farm-gold/30 rounded-xl relative py-3 bg-black/40">
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-farm-green to-transparent z-10 flex items-center pl-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span className="text-xs font-bold text-farm-gold tracking-wider">LIVE</span>
+              </div>
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-farm-green to-transparent z-10"></div>
+            
+            <div className="flex items-center animate-[marquee_20s_linear_infinite] whitespace-nowrap pl-24">
+              <div className="flex items-center gap-8 px-4 text-sm font-medium">
+                <span className="text-farm-cream">Wheat (Lok-1): <span className="text-green-400">₹2,850/qtl ▲ (+12)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Soybean (Yellow): <span className="text-red-400">₹4,200/qtl ▼ (-35)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Onion (Red): <span className="text-green-400">₹1,800/qtl ▲ (+50)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Cotton (BT): <span className="text-green-400">₹7,100/qtl ▲ (+110)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Maize: <span className="text-red-400">₹2,150/qtl ▼ (-5)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                {/* Duplicate for seamless infinite loop */}
+                <span className="text-farm-cream">Wheat (Lok-1): <span className="text-green-400">₹2,850/qtl ▲ (+12)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Soybean (Yellow): <span className="text-red-400">₹4,200/qtl ▼ (-35)</span></span>
+                <span className="text-farm-cream/40">•</span>
+                <span className="text-farm-cream">Onion (Red): <span className="text-green-400">₹1,800/qtl ▲ (+50)</span></span>
+              </div>
+            </div>
+          </div>
+
           {/* Orders List */}
           {orders.length === 0 ? (
             <div className="glass-panel p-16 text-center border border-farm-cream/10">

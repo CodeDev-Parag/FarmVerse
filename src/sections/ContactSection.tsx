@@ -269,12 +269,15 @@ export default function ContactSection() {
             </div>
 
             {/* Links */}
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-6">
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
                 Privacy
               </a>
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
                 Terms
+              </a>
+              <a href="https://enam.gov.in/web/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-farm-gold hover:text-farm-cream transition-colors">
+                Government e-NAM
               </a>
               <a href="#" className="text-sm text-farm-cream/60 hover:text-farm-cream transition-colors">
                 Careers
@@ -296,9 +299,14 @@ export default function ContactSection() {
             </div>
           </div>
 
-          <p className="text-center text-farm-cream/40 text-sm mt-8">
-            © 2026 FarmVerse. Empowering farmers worldwide.
-          </p>
+          <div className="mt-8 pt-6 border-t border-farm-cream/5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-center text-farm-cream/40 text-sm">
+              © 2026 FarmVerse. Empowering farmers worldwide.
+            </p>
+            <p className="text-center text-farm-cream/60 text-sm font-medium">
+              Made with <span className="text-red-500 animate-pulse inline-block">❤️</span> by <span className="text-farm-gold font-bold">Parag</span>
+            </p>
+          </div>
         </footer>
       </div>
     </section>
