@@ -17,9 +17,11 @@ export default function MarketplaceSection() {
   const [addedProducts, setAddedProducts] = useState<Set<string>>(new Set());
 
   const filteredProducts = products.filter(product => {
+    // Only show approved products, or products without an approval status (legacy)
+    const isApproved = !product.approval_status || product.approval_status === 'approved';
     const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return isApproved && matchesCategory && matchesSearch;
   });
 
   useLayoutEffect(() => {

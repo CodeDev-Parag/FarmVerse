@@ -36,7 +36,8 @@ export default function CustomerDashboard() {
           status: ord.status,
           items: ord.items,
           shipping_details: ord.shipping_details,
-          created_at: ord.created_at
+          created_at: ord.created_at,
+          admin_approval_status: ord.admin_approval_status
         }));
         setOrders(formatted);
       }
@@ -126,11 +127,16 @@ export default function CustomerDashboard() {
               status: ord.status,
               items: ord.items,
               shipping_details: ord.shipping_details,
-              created_at: ord.created_at
+              created_at: ord.created_at,
+              admin_approval_status: ord.admin_approval_status
             }, ...current]);
           } else if (payload.eventType === 'UPDATE') {
             setOrders((current) => 
-              current.map(o => o.id === payload.new.id ? { ...o, status: payload.new.status } : o)
+              current.map(o => o.id === payload.new.id ? { 
+                ...o, 
+                status: payload.new.status,
+                admin_approval_status: payload.new.admin_approval_status
+              } : o)
             );
           }
         }
@@ -297,21 +303,30 @@ export default function CustomerDashboard() {
               {orders.map(order => (
                 <div key={order.id} className="glass-panel border border-farm-cream/10 overflow-hidden">
                   <div className="p-6 border-b border-farm-cream/10 flex flex-wrap items-center justify-between gap-4 bg-farm-cream/5">
-                    <div>
+                    <div className="flex-1 min-w-[150px]">
                       <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.orderNumber')}</p>
                       <p className="font-mono font-medium">{order.short_id || order.id.substring(0,8)}</p>
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-[100px]">
                       <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.date')}</p>
                       <p className="font-medium">{new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-[100px]">
                       <p className="text-sm text-farm-cream/60 mb-1">{t('customerDashboard.total')}</p>
                       <p className="font-mono font-bold text-farm-gold">₹{order.total.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2 px-4 py-2 bg-black/30 rounded-full border border-farm-cream/10">
-                      {getStatusIcon(order.status)}
-                      <span className="font-medium text-sm">{getStatusText(order.status)}</span>
+                    
+                    <div className="flex flex-col items-end gap-2">
+                       <div className="flex items-center gap-2 px-4 py-2 bg-black/30 rounded-full border border-farm-cream/10">
+                         {getStatusIcon(order.status)}
+                         <span className="font-medium text-sm">{getStatusText(order.status)}</span>
+                       </div>
+                       
+                       {order.admin_approval_status === 'pending' && (
+                         <div className="text-[10px] bg-yellow-500/20 text-yellow-500 border border-yellow-500/20 px-2 py-1 flex items-center justify-center rounded-full uppercase tracking-wider font-bold animate-pulse">
+                           Pending Assignment
+                         </div>
+                       )}
                     </div>
                   </div>
                   

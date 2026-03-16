@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, ArrowLeft, Package, MessageSquare, Send, UserCircle, Settings, ShieldAlert, Globe, Users } from 'lucide-react';
+import { LogOut, ArrowLeft, Package, MessageSquare, Send, UserCircle, Settings, ShieldAlert, Globe, Users, Check, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
@@ -11,11 +11,12 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user, setUser, isMaintenanceMode, setIsMaintenanceMode } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState<'orders' | 'support' | 'management'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'support' | 'management' | 'approvals'>('orders');
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [usersList, setUsersList] = useState<any[]>([]);
+  const [pendingProducts, setPendingProducts] = useState<any[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,6 +36,8 @@ export default function AdminDashboard() {
           status: ord.status,
           items: ord.items,
           shipping_details: ord.shipping_details,
+          admin_approval_status: ord.admin_approval_status,
+          assigned_farmer_id: ord.assigned_farmer_id,
           created_at: ord.created_at
         }));
         setOrders(formatted);
@@ -66,7 +69,6 @@ export default function AdminDashboard() {
     
     fetchMessages();
 
-    // 2.5 Fetch Users
     const fetchUsers = async () => {
       const { data, error } = await supabase.rpc('get_all_users');
       if (data && !error) {
@@ -77,6 +79,17 @@ export default function AdminDashboard() {
     };
 
     fetchUsers();
+
+    const fetchPendingProducts = async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('approval_status', 'pending')
+        .order('created_at', { ascending: false });
+      if (data) setPendingProducts(data);
+    };
+
+    fetchPendingProducts();
 
     // 3. Subscribe to ALL real-time WebSockets
     const messagesChannel = supabase
@@ -130,20 +143,33 @@ export default function AdminDashboard() {
               status: ord.status,
               items: ord.items,
               shipping_details: ord.shipping_details,
+              admin_approval_status: ord.admin_approval_status,
+              assigned_farmer_id: ord.assigned_farmer_id,
               created_at: ord.created_at
             }, ...current]);
           } else if (payload.eventType === 'UPDATE') {
             setOrders((current) => 
-              current.map(o => o.id === payload.new.id ? { ...o, status: payload.new.status } : o)
+              current.map(o => o.id === payload.new.id ? { 
+                ...o, 
+                status: payload.new.status,
+                admin_approval_status: payload.new.admin_approval_status,
+                assigned_farmer_id: payload.new.assigned_farmer_id
+              } : o)
             );
           }
         }
       )
       .subscribe();
 
+    const productsChannel = supabase
+      .channel('admin_products')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products', filter: 'approval_status=eq.pending' }, () => fetchPendingProducts())
+      .subscribe();
+
     return () => {
       supabase.removeChannel(messagesChannel);
       supabase.removeChannel(ordersChannel);
+      supabase.removeChannel(productsChannel);
     };
   }, []);
 
@@ -197,6 +223,11 @@ export default function AdminDashboard() {
     });
     
     setChatInput('');
+  };
+
+  const updateProductApproval = async (productId: string, status: 'approved' | 'rejected') => {
+    setPendingProducts(current => current.filter(p => p.id !== productId));
+    await supabase.from('products').update({ approval_status: status }).eq('id', productId);
   };
 
   const handleToggleMaintenance = async () => {
@@ -260,6 +291,13 @@ export default function AdminDashboard() {
             <Settings className="w-5 h-5" />
             <span className="font-medium">{t('adminDashboard.tabs.management')}</span>
           </button>
+          <button 
+            onClick={() => setActiveTab('approvals')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'approvals' ? 'bg-farm-cream/10 text-farm-cream' : 'text-farm-cream/60 hover:text-farm-cream hover:bg-farm-cream/5'}`}
+          >
+            <ShieldAlert className="w-5 h-5" />
+            <span className="font-medium">Approvals</span>
+          </button>
         </nav>
 
         <div className="mt-auto border-t border-farm-cream/10 pt-6">
@@ -301,21 +339,51 @@ export default function AdminDashboard() {
                         <p className="text-sm text-farm-cream/60">{order.items.length} items • ₹{order.total.toFixed(2)}</p>
                       </div>
                       
-                      <div className="flex items-center gap-4">
-                        <span className={`px-4 py-1.5 rounded-full text-sm font-bold border ${statusColors[order.status]}`}>
-                          {order.status.toUpperCase()}
-                        </span>
-                        
-                        <select 
-                          value={order.status}
-                          onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
-                          className="bg-black/50 border border-farm-cream/20 text-farm-cream text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-farm-gold"
-                        >
-                          <option value="pending">{t('customerDashboard.status.pending')}</option>
-                          <option value="processing">{t('customerDashboard.status.processing')}</option>
-                          <option value="shipped">{t('customerDashboard.status.shipped')}</option>
-                          <option value="delivered">{t('customerDashboard.status.delivered')}</option>
-                        </select>
+                      <div className="flex flex-col items-end gap-2 relative z-10 w-full sm:w-auto">
+                        <div className="flex items-center gap-2">
+                          {order.admin_approval_status === 'pending' && (
+                              <select 
+                                onChange={async (e) => {
+                                  const farmerId = e.target.value;
+                                  if (farmerId) {
+                                    await supabase.from('orders').update({
+                                      admin_approval_status: 'approved',
+                                      assigned_farmer_id: farmerId,
+                                      status: 'processing'
+                                    }).eq('id', order.id);
+                                  }
+                                }}
+                                className="bg-yellow-500/20 text-yellow-500 border border-yellow-500/50 text-xs rounded-xl px-3 py-1.5 focus:outline-none"
+                              >
+                                <option value="">Assign Farmer...</option>
+                                {usersList.filter(u => u.role === 'farmer').map(f => (
+                                  <option key={f.id} value={f.id}>{f.email}</option>
+                                ))}
+                              </select>
+                          )}
+                          {(order.admin_approval_status === 'approved' || (!order.admin_approval_status && order.assigned_farmer_id)) && (
+                            <div className="text-xs text-farm-cream/60 bg-black/30 px-3 py-1.5 rounded-xl border border-farm-cream/10">
+                              Assigned to: {usersList.find(u => u.id === order.assigned_farmer_id)?.email || 'Unassigned'}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <span className={`px-4 py-1.5 rounded-full text-sm font-bold border ${statusColors[order.status]}`}>
+                            {order.status.toUpperCase()}
+                          </span>
+                          
+                          <select 
+                            value={order.status}
+                            onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
+                            className="bg-black/50 border border-farm-cream/20 text-farm-cream text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-farm-gold"
+                          >
+                            <option value="pending">{t('customerDashboard.status.pending')}</option>
+                            <option value="processing">{t('customerDashboard.status.processing')}</option>
+                            <option value="shipped">{t('customerDashboard.status.shipped')}</option>
+                            <option value="delivered">{t('customerDashboard.status.delivered')}</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -417,6 +485,57 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'approvals' && (
+            <div className="h-full flex flex-col">
+              <div className="mb-8">
+                <h1 className="text-3xl font-heading font-bold mb-2">Pending Approvals</h1>
+                <p className="text-farm-cream/60">Review and approve new products submitted by farmers.</p>
+              </div>
+
+              <div className="flex-1 overflow-auto pr-2 custom-scrollbar">
+                <div className="space-y-4">
+                  {pendingProducts.length === 0 ? (
+                    <div className="text-center p-12 glass-panel border border-farm-cream/10 text-farm-cream/50">
+                      No pending products to approve.
+                    </div>
+                  ) : (
+                    pendingProducts.map(product => (
+                      <div key={product.id} className="glass-panel border border-farm-cream/10 p-6 flex flex-wrap items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                           <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded-xl bg-farm-cream/10" />
+                           <div>
+                             <h4 className="font-bold text-lg">{product.name}</h4>
+                             <p className="text-sm text-farm-cream/60">
+                               ₹{product.price}/{product.unit} • Stock: {product.stock}
+                             </p>
+                             <p className="text-xs text-farm-cream/40 mt-1">
+                               Farmer: {usersList.find(u => u.id === product.farmer_id)?.email || 'Unknown'}
+                             </p>
+                           </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <button 
+                            onClick={() => updateProductApproval(product.id, 'rejected')}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 border border-red-500/20 hover:bg-red-500/10 transition-colors"
+                          >
+                            <X className="w-4 h-4" /> Reject
+                          </button>
+                          <button 
+                            onClick={() => updateProductApproval(product.id, 'approved')}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl text-farm-green bg-farm-gold hover:brightness-110 transition-colors font-bold"
+                          >
+                            <Check className="w-4 h-4" /> Approve
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           )}

@@ -23,6 +23,7 @@ export interface Product {
     isFresh?: boolean;
     freeDelivery?: boolean;
     farmer_id?: string;
+    approval_status?: 'pending' | 'approved' | 'rejected';
 }
 
 const initialProducts: Product[] = [
@@ -45,6 +46,8 @@ export interface Order {
     status: OrderStatus;
     items: CartItem[];
     shipping_details: any;
+    admin_approval_status?: 'pending' | 'approved' | 'rejected';
+    assigned_farmer_id?: string;
     created_at: string;
 }
 

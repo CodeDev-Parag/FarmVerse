@@ -42,6 +42,7 @@ export default function CheckoutPage() {
         status: 'pending',
         items: cart,
         shipping_details: formData,
+        admin_approval_status: 'pending',
       });
 
       if (error) {
