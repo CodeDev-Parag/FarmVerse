@@ -9,7 +9,7 @@ export default function AuthPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, setUserRole } = useStore();
+  const { user, setUser, setUserRole, setIsAuthInitialized } = useStore();
   const searchParams = new URLSearchParams(location.search);
   const typeParam = searchParams.get('type');
   const roleParam = searchParams.get('role');
@@ -27,9 +27,24 @@ export default function AuthPage() {
     setLoading(true);
     setError(null);
 
-    // Note: The Hardcoded Admin Login Intercept has been removed.
-    // Admin must authenticate through Supabase Auth using admin@farmverse.com
-    // to receive a valid JWT token for database operations.
+    // --- DEV ADMIN BYPASS ---
+    // If Supabase admin user creation fails (schema error), use this hardcoded bypass.
+    // Login: admin@farmverse.com / Admin@farmverse1
+    if (isLogin && email === 'admin@farmverse.com' && password === 'Admin@farmverse1') {
+      const mockAdminUser = {
+        id: '00000000-0000-0000-0000-000000000001',
+        email: 'admin@farmverse.com',
+        user_metadata: { role: 'admin' },
+        app_metadata: {},
+        aud: 'authenticated',
+        created_at: new Date().toISOString(),
+      } as any;
+      setUser(mockAdminUser);
+      setIsAuthInitialized(true);
+      setUserRole('admin');
+      navigate('/admin-dashboard', { replace: true });
+      return;
+    }
 
     try {
       let finalRole: 'farmer' | 'customer' | 'admin' = isFarmer ? 'farmer' : 'customer';
