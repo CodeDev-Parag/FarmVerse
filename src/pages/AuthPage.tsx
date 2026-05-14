@@ -9,7 +9,7 @@ export default function AuthPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, user, setUserRole } = useStore();
+  const { user, setUserRole } = useStore();
   const searchParams = new URLSearchParams(location.search);
   const typeParam = searchParams.get('type');
   const roleParam = searchParams.get('role');
