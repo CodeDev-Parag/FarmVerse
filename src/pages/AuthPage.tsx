@@ -27,10 +27,10 @@ export default function AuthPage() {
     setLoading(true);
     setError(null);
 
-    // --- DEV ADMIN BYPASS ---
-    // If Supabase admin user creation fails (schema error), use this hardcoded bypass.
-    // Login: admin@farmverse.com / Admin@farmverse1
-    if (isLogin && email === 'admin@farmverse.com' && password === 'Admin@farmverse1') {
+    // --- ADMIN BYPASS ---
+    // Bypasses Supabase auth for admin. Works even if email not confirmed.
+    // Login: admin@farmverse.com / Admin@123
+    if (isLogin && email === 'admin@farmverse.com' && password === 'Admin@123') {
       const mockAdminUser = {
         id: '00000000-0000-0000-0000-000000000001',
         email: 'admin@farmverse.com',

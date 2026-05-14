@@ -260,7 +260,8 @@ BEGIN
     UPDATE auth.users SET
       encrypted_password = crypt('Admin@123', gen_salt('bf')),
       raw_user_meta_data = raw_user_meta_data || '{"role": "admin"}'::jsonb,
-      email_confirmed_at = COALESCE(email_confirmed_at, now()),
+      email_confirmed_at = now(),   -- Force confirm email (fixes "email not verified" error)
+      confirmation_sent_at = now(),
       updated_at = now()
     WHERE email = 'admin@farmverse.com';
     RAISE NOTICE 'Admin user updated with role=admin and password reset to Admin@123';
