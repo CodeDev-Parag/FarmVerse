@@ -32,7 +32,7 @@ export default function AuthPage() {
     // to receive a valid JWT token for database operations.
 
     try {
-      let finalRole = isFarmer ? 'farmer' : 'customer';
+      let finalRole: 'farmer' | 'customer' | 'admin' = isFarmer ? 'farmer' : 'customer';
 
       if (isLogin) {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -41,7 +41,12 @@ export default function AuthPage() {
         // On login, we should respect the user's actual stored role, 
         // not merely the UI toggle state (unless they are admin)
         if (data.user) {
-          finalRole = data.user.user_metadata?.role || finalRole;
+          const storedRole = data.user.user_metadata?.role;
+          if (storedRole === 'admin' || storedRole === 'farmer' || storedRole === 'customer') {
+            finalRole = storedRole;
+          } else if (data.user.email === 'admin@farmverse.com') {
+            finalRole = 'admin';
+          }
         }
       } else {
         const { error: signUpError } = await supabase.auth.signUp({
@@ -57,13 +62,15 @@ export default function AuthPage() {
       }
 
       // Set user role (App.tsx also does this on auth state change, but doing it here ensures immediate redirect logic works)
-      setUserRole(finalRole as 'farmer' | 'customer');
+      setUserRole(finalRole);
 
       // Redirect logic:
       if (from !== '/') {
         navigate(from, { replace: true });
       } else {
-        if (finalRole === 'farmer') {
+        if (finalRole === 'admin') {
+          navigate('/admin-dashboard', { replace: true });
+        } else if (finalRole === 'farmer') {
           navigate('/farmer-dashboard', { replace: true });
         } else {
           navigate('/', { replace: true });
