@@ -27,14 +27,9 @@ export default function AuthPage() {
     setLoading(true);
     setError(null);
 
-    // Hardcoded Admin Login Intercept
-    if (email === 'admin@farmverse.com' && password === 'admin123') {
-      setUser({ id: 'admin-id', email: 'admin@farmverse.com', app_metadata: {}, user_metadata: {}, aud: 'authenticated', created_at: '' } as any);
-      useStore.getState().setUserRole('admin');
-      navigate('/admin-dashboard', { replace: true });
-      setLoading(false);
-      return;
-    }
+    // Note: The Hardcoded Admin Login Intercept has been removed.
+    // Admin must authenticate through Supabase Auth using admin@farmverse.com
+    // to receive a valid JWT token for database operations.
 
     try {
       let finalRole = isFarmer ? 'farmer' : 'customer';

@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 import type { OrderStatus, ChatMessage, Order } from '../store/useStore';
+import type { Product } from '../store/useStore';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, setUser, isMaintenanceMode, setIsMaintenanceMode } = useStore();
+  const { user, setUser, isMaintenanceMode, setIsMaintenanceMode, products, setProducts } = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeTab, setActiveTab] = useState<'orders' | 'support' | 'management' | 'approvals'>('orders');
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
@@ -163,7 +164,8 @@ export default function AdminDashboard() {
 
     const productsChannel = supabase
       .channel('admin_products')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'products', filter: 'approval_status=eq.pending' }, () => fetchPendingProducts())
+      // Listen to ALL product changes (no filter — Supabase realtime filters need DB indexes to be reliable)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => fetchPendingProducts())
       .subscribe();
 
     return () => {
@@ -226,8 +228,33 @@ export default function AdminDashboard() {
   };
 
   const updateProductApproval = async (productId: string, status: 'approved' | 'rejected') => {
+    const previousPendingProducts = [...pendingProducts];
+    const productBeingApproved = pendingProducts.find(p => p.id === productId);
+    
+    // Optimistic: remove from pending list immediately
     setPendingProducts(current => current.filter(p => p.id !== productId));
-    await supabase.from('products').update({ approval_status: status }).eq('id', productId);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .update({ approval_status: status })
+      .eq('id', productId)
+      .select();
+      
+    if (error || !data || data.length === 0) {
+      console.error('Error updating product approval:', error || 'No rows updated (RLS violation?)');
+      alert(`Failed to update product approval status to ${status}. ${error?.message || 'Check database permissions (RLS policy may be blocking this update). Run the SQL fix in Supabase dashboard.'}`);
+      // Revert optimistic UI
+      setPendingProducts(previousPendingProducts);
+    } else if (status === 'approved' && productBeingApproved) {
+      // Immediately add to the global products store so it appears on the marketplace NOW
+      const approvedProduct: Product = { ...productBeingApproved, approval_status: 'approved' };
+      const alreadyInStore = products.some(p => p.id === productId);
+      if (alreadyInStore) {
+        setProducts(products.map(p => p.id === productId ? approvedProduct : p));
+      } else {
+        setProducts([approvedProduct, ...products]);
+      }
+    }
   };
 
   const handleToggleMaintenance = async () => {

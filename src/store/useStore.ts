@@ -165,11 +165,48 @@ export const useStore = create<StoreState>()(
         const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
         if (error) {
             console.error('Error fetching products from Supabase:', error);
+            // Fall back to initial products so the marketplace is never empty
+            set({ products: initialProducts });
             return;
         }
-        if (data) {
-            set({ products: data });
+        if (data && data.length > 0) {
+            // Merge DB products with initialProducts (legacy products without farmer_id show always)
+            // DB products take priority; initialProducts fill in if not already in DB
+            const dbIds = new Set(data.map((p: any) => p.id));
+            const legacyProducts = initialProducts.filter(p => !dbIds.has(p.id));
+            set({ products: [...data, ...legacyProducts] });
+        } else {
+            // DB is empty — show initial products so marketplace is not blank
+            set({ products: initialProducts });
         }
+
+        // Add real-time listener for product updates (e.g., approval status changes by admin)
+        supabase.channel('global_products_updates')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, (payload: any) => {
+             if (payload.eventType === 'UPDATE') {
+               const state = get();
+               // Check if this product is already in the list
+               const exists = state.products.some(p => p.id === payload.new.id);
+               if (exists) {
+                 // Update the product in place (handles approval_status change to 'approved')
+                 const updatedProducts = state.products.map(p => p.id === payload.new.id ? { ...p, ...payload.new } : p);
+                 set({ products: updatedProducts });
+               } else if (payload.new.approval_status === 'approved') {
+                 // A newly approved product not yet in the list — add it
+                 set({ products: [payload.new, ...state.products] });
+               }
+             } else if (payload.eventType === 'INSERT') {
+               const state = get();
+               // Avoid duplicating if we optimistically added it already
+               if (!state.products.some(p => p.id === payload.new.id)) {
+                  set({ products: [payload.new, ...state.products] });
+               }
+             } else if (payload.eventType === 'DELETE') {
+               const state = get();
+               set({ products: state.products.filter(p => p.id !== payload.old.id) });
+             }
+          })
+          .subscribe();
     },
 
     // System Settings
