@@ -23,6 +23,7 @@ DROP POLICY IF EXISTS "Allow public to read approved products" ON public.product
 DROP POLICY IF EXISTS "products_update_policy" ON public.products;
 DROP POLICY IF EXISTS "Allow public read" ON public.products;
 DROP POLICY IF EXISTS "Allow farmers to insert" ON public.products;
+DROP POLICY IF EXISTS "Allow authenticated insert" ON public.products;
 DROP POLICY IF EXISTS "Allow authenticated update" ON public.products;
 DROP POLICY IF EXISTS "Allow authenticated delete" ON public.products;
 
@@ -73,6 +74,8 @@ DROP POLICY IF EXISTS "Allow admin to update orders" ON public.orders;
 DROP POLICY IF EXISTS "Allow public insert orders" ON public.orders;
 DROP POLICY IF EXISTS "Allow authenticated read orders" ON public.orders;
 DROP POLICY IF EXISTS "Allow authenticated update orders" ON public.orders;
+DROP POLICY IF EXISTS "Allow authenticated insert orders" ON public.orders;
+DROP POLICY IF EXISTS "Allow read own orders" ON public.orders;
 
 -- Policy 1: Any authenticated user can INSERT an order (place an order)
 -- This fixes the "error placing order" bug
