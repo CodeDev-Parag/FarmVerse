@@ -207,14 +207,81 @@ VALUES
 ON CONFLICT DO NOTHING;
 
 -- ============================================================
--- STEP 5: Verify everything
+-- STEP 5: Create Admin User (if not exists)
+-- This fixes "invalid credentials" on admin login
+-- Password will be set to: Admin@123  (change after login!)
 -- ============================================================
+
+DO $$
+DECLARE
+  admin_uid UUID;
+BEGIN
+  -- Check if admin user already exists
+  SELECT id INTO admin_uid FROM auth.users WHERE email = 'admin@farmverse.com';
+  
+  IF admin_uid IS NULL THEN
+    -- Insert admin user into auth.users
+    INSERT INTO auth.users (
+      id,
+      instance_id,
+      email,
+      encrypted_password,
+      email_confirmed_at,
+      raw_app_meta_data,
+      raw_user_meta_data,
+      is_super_admin,
+      role,
+      created_at,
+      updated_at,
+      confirmation_token,
+      email_change_token_new,
+      recovery_token,
+      aud
+    ) VALUES (
+      gen_random_uuid(),
+      '00000000-0000-0000-0000-000000000000',
+      'admin@farmverse.com',
+      crypt('Admin@123', gen_salt('bf')),
+      now(),
+      '{"provider": "email", "providers": ["email"]}'::jsonb,
+      '{"role": "admin"}'::jsonb,
+      false,
+      'authenticated',
+      now(),
+      now(),
+      '',
+      '',
+      '',
+      'authenticated'
+    );
+    RAISE NOTICE 'Admin user created: admin@farmverse.com / Admin@123';
+  ELSE
+    -- Update existing admin's role metadata and reset password
+    UPDATE auth.users SET
+      encrypted_password = crypt('Admin@123', gen_salt('bf')),
+      raw_user_meta_data = raw_user_meta_data || '{"role": "admin"}'::jsonb,
+      email_confirmed_at = COALESCE(email_confirmed_at, now()),
+      updated_at = now()
+    WHERE email = 'admin@farmverse.com';
+    RAISE NOTICE 'Admin user updated with role=admin and password reset to Admin@123';
+  END IF;
+END $$;
+
+-- ============================================================
+-- STEP 6: Verify everything
+-- ============================================================
+
+-- Check admin user exists in auth
+SELECT id, email, email_confirmed_at, raw_user_meta_data->>'role' AS role
+FROM auth.users 
+WHERE email = 'admin@farmverse.com';
 
 -- Check products
 SELECT id, name, price, approval_status FROM public.products ORDER BY created_at DESC LIMIT 10;
 
--- Check orders RLS policies
-SELECT schemaname, tablename, policyname, cmd, qual 
+-- Check RLS policies
+SELECT tablename, policyname, cmd
 FROM pg_policies 
 WHERE tablename IN ('orders', 'products', 'messages')
 ORDER BY tablename, policyname;
+
