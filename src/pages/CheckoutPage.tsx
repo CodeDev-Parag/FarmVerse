@@ -47,7 +47,7 @@ export default function CheckoutPage() {
 
       if (error) {
         console.error("Error creating order:", error);
-        alert("There was an error placing your order. Please try again.");
+        alert(`Failed to place order: ${error.message || error.code || 'Unknown error'}. ${error.hint ? `\nHint: ${error.hint}` : ''}`);
         setLoading(false);
         return;
       }
