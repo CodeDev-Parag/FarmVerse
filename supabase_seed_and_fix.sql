@@ -47,9 +47,20 @@ CREATE POLICY "Allow authenticated delete" ON public.products
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- ============================================================
--- STEP 2: Fix ORDERS table RLS
+-- STEP 2: Fix ORDERS table — Add missing columns + RLS
 -- (THIS IS THE MAIN FIX FOR ORDER PLACEMENT FAILING)
 -- ============================================================
+
+-- Add missing columns to orders table (safe — only adds if not exists)
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS short_id TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS customer_id UUID;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS total NUMERIC;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS items JSONB;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS shipping_details JSONB;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS admin_approval_status TEXT DEFAULT 'pending';
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS assigned_farmer_id UUID;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
 
 -- Enable RLS on orders table
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
